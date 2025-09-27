@@ -7,7 +7,7 @@ export function Login (){
     
     const [credentials, setCredentials] = useState({
         username : "",
-        password : "null"
+        password : ""
     }) 
 
     const usuarioId = useId()
