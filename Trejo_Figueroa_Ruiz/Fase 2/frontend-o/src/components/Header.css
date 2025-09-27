@@ -1,0 +1,13 @@
+.container {
+    display: flex;
+    justify-content: flex-start; /* Alinea el contenido a la izquierda */
+    align-items: center; /* Centra verticalmente */
+    padding: 30px 20px; /* Espaciado interno */
+    background-color: white;
+}
+
+.container img {
+    height: 40px; /* Altura fija para la imagen */
+    width: auto; /* Mantiene la proporción */
+    max-width: 100%; /* Responsive */
+}
