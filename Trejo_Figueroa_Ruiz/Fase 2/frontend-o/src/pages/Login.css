@@ -1,5 +1,5 @@
 /* Contenedor principal */
-.content {
+.content-login {
     min-height: 100vh;
     display: flex;
     flex-direction: column;

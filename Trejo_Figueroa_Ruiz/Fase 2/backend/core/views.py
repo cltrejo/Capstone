@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 # Create your views here.
 from rest_framework.decorators import api_view
+from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -36,3 +37,16 @@ def login(request):
             'user': UserSerializer(user).data
         })
     return Response(serializer.errors, status=400)
+
+@api_view(['POST'])
+def VerifyTokenView(request):
+    token = request.headers.get("Authorization")
+    if not token:
+        return Response({"valid": False}, status=status.HTTP_401_UNAUTHORIZED)
+
+    token = token.replace("Token ", "")
+    try:
+        token_obj = Token.objects.get(key=token)
+        return Response({"valid": True, "user": token_obj.user.username}, status=status.HTTP_200_OK)
+    except Token.DoesNotExist:
+        return Response({"valid": False}, status=status.HTTP_401_UNAUTHORIZED)
