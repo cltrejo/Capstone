@@ -38,6 +38,7 @@ export function Login (){
 
     if (response.ok) {
       localStorage.setItem("token", data.token)
+      localStorage.setItem("username", data.user.username)
       navigate('/home', { replace: true })
     } else {
       alert("Credenciales inválidas")

@@ -1,10 +1,12 @@
 export function Room() {
     return (
-        <svg width="400" height="300" viewBox="0 0 400 300">
-        <path d="M50,50 L350,50 L350,250 L280,250 L280,200 L220,200 L220,250 L50,250 Z" 
-                fill="#14CF00" 
+        <svg width="100%" height="auto" viewBox="0 0 400 300" style={{maxWidth: '52%'}}>
+            <path 
+                d="M50,50 L350,50 L350,250 L280,250 L280,200 L220,200 L220,250 L50,250 Z" 
+                fill="#14B78F" 
                 stroke="#081FF6" 
-                stroke-width="4"/>
+                strokeWidth="4"
+            />
         </svg>
     )
 }

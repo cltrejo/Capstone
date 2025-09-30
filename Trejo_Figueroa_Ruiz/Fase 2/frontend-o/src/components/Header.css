@@ -32,3 +32,8 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Mejor que filter para hover */
 }
+
+.msg {
+    color: #081FF6;
+    font-weight: bolder;
+}
