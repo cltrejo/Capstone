@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
@@ -98,7 +98,23 @@ DATABASES = {
             'driver': 'ODBC Driver 17 for SQL Server'
         }
     }
+}'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'mssql',
+        'NAME': 'bluetek',
+        'USER': 'sa',
+        'PASSWORD': 'admin',
+        'HOST': 'DESKTOP-A2T36MU',
+        'PORT': '',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server'
+        }
+    }
 }
+
+
 
 
 # Password validation
