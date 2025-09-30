@@ -2,17 +2,6 @@
 
 ```bash
 
-cd .\env\Scripts\activate
-
-```
-```bash
-
-pip install -r requirements.txt
-
-```
-
-```bash
-
 py manage.py migrate
 
 ```
