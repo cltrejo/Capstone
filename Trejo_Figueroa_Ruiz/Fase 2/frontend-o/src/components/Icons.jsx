@@ -1,13 +1,10 @@
 export function Room() {
     return (
-        <svg width="600" height="400">
-        <rect x="50" y="50" width="300" height="250" fill="none" stroke="black" stroke-width="3"/>
-        
-        <line x1="200" y1="50" x2="200" y2="300" stroke="black" stroke-width="2"/>
-        
-        <rect x="50" y="50" width="150" height="250" fill="lightblue" stroke="black"/>
-        
-        <rect x="200" y="50" width="150" height="250" fill="lightgreen" stroke="black"/>
+        <svg width="400" height="300" viewBox="0 0 400 300">
+        <path d="M50,50 L350,50 L350,250 L280,250 L280,200 L220,200 L220,250 L50,250 Z" 
+                fill="#14CF00" 
+                stroke="#081FF6" 
+                stroke-width="4"/>
         </svg>
     )
 }

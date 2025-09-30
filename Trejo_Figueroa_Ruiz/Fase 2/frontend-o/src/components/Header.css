@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between; /* Distribuye el espacio entre los elementos */
     align-items: center; /* Centra verticalmente */
-    padding: 30px 20px; /* Espaciado interno */
+    padding: 15px 10px; /* Espaciado interno */
     background-color: white;
     width: 100%; /* Asegura que ocupe todo el ancho */
     box-sizing: border-box;
