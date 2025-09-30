@@ -12,7 +12,9 @@
     height: 40px; /* Altura fija para la imagen */
     width: auto; /* Mantiene la proporción */
     max-width: 100%; /* Responsive */
+    cursor: pointer;
 }
+
 
 .msg {
     color: #081FF6;

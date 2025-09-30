@@ -25,7 +25,13 @@ SECRET_KEY = 'django-insecure-0+5(v_99m2=05j-^k7z@91)1!brc5_@z*el*xp17oczb)pkig9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '5g6lhmg0-8000.brs.devtunnels.ms',
+    '5g6lhmg0-5173.brs.devtunnels.ms',
+    '.brs.devtunnels.ms'  # Para cualquier subdominio de devtunnels
+]
 
 
 # Application definition
@@ -60,7 +66,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True  # Para desarrollo
+CORS_ALLOW_ALL_ORIGINS = True
+
 
 ROOT_URLCONF = 'backend.urls'
 
