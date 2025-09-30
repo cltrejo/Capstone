@@ -1,12 +1,9 @@
 import { Header } from '../components/Header'
+import { Room } from '../components/Icons';
 import './Home.css'
 
-export function Home (){
 
-    const logout = () => {
-        window.localStorage.removeItem("token")
-        window.location.href = "/"
-    };
+export function Home (){
     
     return (
         <>
@@ -15,9 +12,7 @@ export function Home (){
                 <Header/>
             </header>
             <main>
-                <h1>Home</h1>
-
-                <button className='btn-cerrar' onClick={logout}>Cerrar Sesión</button>
+                <Room />
             </main>
         </div>
         </>

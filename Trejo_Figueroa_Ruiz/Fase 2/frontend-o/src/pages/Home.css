@@ -9,23 +9,3 @@
 .content main {
     padding: 20px;
 }
-
-.btn-cerrar {
-    display: block;
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-top: 20px;
-}
-
-.btn-cerrar:hover {
-    background-color: #c82333;
-    transform: translateY(-2px);
-    filter: brightness(0.7);
-}

@@ -1,13 +1,34 @@
 .container {
     display: flex;
-    justify-content: flex-start; /* Alinea el contenido a la izquierda */
+    justify-content: space-between; /* Distribuye el espacio entre los elementos */
     align-items: center; /* Centra verticalmente */
     padding: 30px 20px; /* Espaciado interno */
     background-color: white;
+    width: 100%; /* Asegura que ocupe todo el ancho */
+    box-sizing: border-box;
 }
 
 .container img {
     height: 40px; /* Altura fija para la imagen */
     width: auto; /* Mantiene la proporción */
     max-width: 100%; /* Responsive */
+}
+
+.btn-cerrar {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    /* Elimina margin-top ya que usamos align-items: center */
+}
+
+.btn-cerrar:hover {
+    background-color: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Mejor que filter para hover */
 }
