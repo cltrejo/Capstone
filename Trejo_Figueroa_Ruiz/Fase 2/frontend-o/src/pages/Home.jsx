@@ -20,15 +20,15 @@ export function Home (){
                 <div className="habitacion-selector">
                     <label>Seleccionar Habitación: </label>
                     <select 
-                        value={habitacionSeleccionada?.id || ''} 
+                        value={habitacionSeleccionada?.id_habitacion || ''}
                         onChange={(e) => {
-                            const hab = habitaciones.find(h => h.id === parseInt(e.target.value));
+                            const hab = habitaciones.find(h => h.id_habitacion === parseInt(e.target.value));
                             setHabitacionSeleccionada(hab);
                         }}
                     >
                         <option value="">Selecciona una habitación</option>
                         {habitaciones.map(hab => (
-                            <option key={hab.id} value={hab.id}>
+                            <option key={hab.id_habitacion} value={hab.id_habitacion}>
                                 {hab.nombre} ({hab.temperatura_actual ? `${hab.temperatura_actual}°C` : 'Sin datos'})
                             </option>
                         ))}
