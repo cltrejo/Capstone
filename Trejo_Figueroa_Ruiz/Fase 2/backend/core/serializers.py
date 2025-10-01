@@ -24,18 +24,42 @@ class LoginSerializer(serializers.Serializer):
         return data
     
 # CLASES DE MODELS
-
-class HabitacionSerializer (serializers.ModelSerializer):
-    class Meta:
-        model = Habitacion
-        fields = '__all__'
-    
-class MedicionSerializer (serializers.ModelSerializer):
+class MedicionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Medicion
         fields = '__all__'
 
-class SensorSerializer (serializers.ModelSerializer):
+class SensorSerializer(serializers.ModelSerializer):
+    ultima_medicion = serializers.SerializerMethodField()
+
     class Meta:
         model = Sensor
         fields = '__all__'
+
+    def get_ultima_medicion(self, obj):
+        ultima = Medicion.objects.filter(id_sensor=obj).last()  # ← CORREGIDO
+        if ultima:
+            return MedicionSerializer(ultima).data
+        return None
+    
+class HabitacionSerializer(serializers.ModelSerializer):
+    sensores = SensorSerializer(many=True, read_only=True)
+    temperatura_actual = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Habitacion
+        fields = '__all__'
+
+    def get_temperatura_actual(self, obj):
+        # Obtener el sensor de temperatura de esta habitación
+        sensor_temperatura = Sensor.objects.filter(
+            id_habitacion=obj,  # ← CORREGIDO
+            tipo='temperatura', 
+            activo=True
+        ).first()
+        
+        if sensor_temperatura:
+            ultima_medicion = Medicion.objects.filter(id_sensor=sensor_temperatura).last()  # ← CORREGIDO
+            if ultima_medicion:
+                return float(ultima_medicion.valor)
+        return None

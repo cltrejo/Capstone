@@ -1,3 +1,4 @@
+/* Fondo cuadriculado general */
 .content {
     background-color: #DEDCD6;
     background-image: 
@@ -9,6 +10,56 @@
     flex-direction: column;
 }
 
-.content main {
+/* Layout principal en columna */
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    gap: 20px; /* Espacio entre selector y contenido */
+}
+
+/* Selector de habitaciones */
+.habitacion-selector {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.habitacion-selector label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.habitacion-selector select {
+    width: 200px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 14px;
+}
+
+/* Contenedor de la habitación seleccionada (sala) */
+.habitacion-container {
+    width: 100%;
+    max-width: 800px;
+    background-color: #fff;
+    border-radius: 12px;
     padding: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
+
+.habitacion-container h2 {
+    margin-bottom: 10px;
+    font-size: 22px;
+}
+
+.habitacion-container p {
+    margin-bottom: 20px;
+    color: #555;
 }

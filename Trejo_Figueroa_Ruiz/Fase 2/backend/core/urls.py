@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import registro, login, VerifyTokenView, lista_habitaciones, lista_sensores, lista_mediciones, detalle_habitacion
+from .views import registro, login, VerifyTokenView, lista_habitaciones, lista_sensores, lista_mediciones, detalle_habitacion, historico_sensor, simular_temperatura
 
 urlpatterns = [
     path('api/registro/', registro, name='registro'),
@@ -9,4 +9,6 @@ urlpatterns = [
     path("api/lista_sensores/", lista_sensores, name="lista_sensores"),
     path("api/lista_mediciones/", lista_mediciones, name="lista_mediciones"),
     path("api/detalle_habitacion/<id>", detalle_habitacion, name="detalle_habitacion"),
+    path("api/sensores/<id>/mediciones/", historico_sensor, name="historico_sensor"),
+    path("api/simular_temperatura/", simular_temperatura, name="simular_temperatura"),
 ]

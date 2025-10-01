@@ -1,3 +1,4 @@
+import random
 from django.shortcuts import render
 
 # Create your views here.
@@ -117,6 +118,63 @@ def lista_sensores(request):
         else:
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
         
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def historico_sensor( request, id):
+    try:
+        sensor = Sensor.objects.get(id_sensor = id)
+
+        mediciones = Medicion.objects.filter(id_sensor = id)
+
+        serializer = MedicionSerializer(mediciones, many = True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    except Sensor.DoesNotExist:
+        
+        return Response({'error': 'Sensor no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+
+'''
+POSIBLES ACTUALIZACIONES
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def historico_sensor(request, id):
+    try:
+        sensor = Sensor.objects.get(id=id)
+        
+        # Opcional: parámetros para filtrar por fecha o límite
+        limit = request.GET.get('limit')  # /api/sensores/1/mediciones/?limit=50
+        since = request.GET.get('since')  # /api/sensores/1/mediciones/?since=2024-01-01
+        
+        mediciones = Medicion.objects.filter(sensor=id)
+        
+        # Filtrar por fecha si se proporciona
+        if since:
+            mediciones = mediciones.filter(timestamp__gte=since)
+        
+        # Ordenar por timestamp (más recientes primero) y limitar si se especifica
+        mediciones = mediciones.order_by('-timestamp')
+        
+        if limit:
+            mediciones = mediciones[:int(limit)]
+        
+        serializer = MedicionSerializer(mediciones, many=True)
+        return Response({
+            'sensor': SensorSerializer(sensor).data,
+            'mediciones': serializer.data,
+            'total': mediciones.count()
+        }, status=status.HTTP_200_OK)
+        
+    except Sensor.DoesNotExist:
+        return Response(
+            {'error': 'Sensor no encontrado'}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+'''
+
+        
 @api_view(['GET', 'POST'])
 @permission_classes((IsAuthenticated,))
 def lista_mediciones(request):
@@ -131,3 +189,32 @@ def lista_mediciones(request):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
+        
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def simular_temperatura(request):
+    """
+    Simula cambios de temperatura para todos los sensores activos
+    """
+    sensores = Sensor.objects.filter(tipo='temperatura', activo=True)
+    
+    for sensor in sensores:
+        # Simular temperatura entre 18°C y 30°C con variación realista
+        temperatura_anterior = Medicion.objects.filter(id_sensor=sensor).last()
+        
+        if temperatura_anterior:
+            temp_anterior = float(temperatura_anterior.valor)
+            # Variación de ±2°C respecto a la anterior
+            nueva_temperatura = temp_anterior + random.uniform(-2.0, 2.0)
+            nueva_temperatura = max(18.0, min(30.0, nueva_temperatura))  # Limitar entre 18-30
+        else:
+            nueva_temperatura = random.uniform(20.0, 25.0)  # Temperatura inicial
+        
+        Medicion.objects.create(
+            id_sensor=sensor,
+            valor=nueva_temperatura,
+            unidad='°C'
+        )
+    
+    return Response({"message": f"Temperaturas simuladas para {sensores.count()} sensores"})
