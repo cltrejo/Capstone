@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 export function Room({ svgContent, temperatura }) {
-    const [fillColor, setFillColor] = useState('#99CA88');
+    const [svgProcesado, setSvgProcesado] = useState('');
     
     const temperaturaAColor = (temp) => {
         if (temp === null || temp === undefined) return '#99CA88';
@@ -13,37 +13,46 @@ export function Room({ svgContent, temperatura }) {
         return '#FF4500';
     };
     
+    // Procesar el SVG una vez cuando cambian las props
     useEffect(() => {
-        if (temperatura !== null && temperatura !== undefined) {
-            setFillColor(temperaturaAColor(temperatura));
+        if (!svgContent) {
+            // SVG por defecto
+            const color = temperaturaAColor(temperatura);
+            const svgDefault = `
+                <svg width="100%" height="300" viewBox="0 0 400 300" style="max-width: 52%">
+                    <path 
+                        d="M50,50 L350,50 L350,250 L280,250 L280,200 L220,200 L220,250 L50,250 Z" 
+                        fill="${color}"
+                        stroke="#081FF6" 
+                        stroke-width="4"
+                        stroke-opacity="0.7"
+                        style="transition: fill 0.8s ease-in-out"
+                    />
+                </svg>
+            `;
+            setSvgProcesado(svgDefault);
+            return;
         }
-    }, [temperatura]);
+        
+        const color = temperaturaAColor(temperatura);
+        console.log(`🎨 Procesando SVG - Temp: ${temperatura}°C, Color: ${color}`);
+        
+        const procesado = svgContent
+            .replace(/height="auto"/g, 'height="300"')
+            .replace(/fill=\{fillColor\}/g, `fill="${color}"`)
+            .replace(/fill=\"#[0-9A-Fa-f]{3,6}\"/g, `fill="${color}"`)
+            .replace(/fill=\"#99CA88\"/g, `fill="${color}"`)
+            .replace(/style=\{\{.*?\}\}/g, `style="transition: fill 0.8s ease-in-out"`)
+            .replace(/strokeWidth=/g, 'stroke-width=')
+            .replace(/strokeOpacity=/g, 'stroke-opacity=')
+            .replace(/<path/g, `<path style="transition: fill 0.8s ease-in-out"`);
+        
+        setSvgProcesado(procesado);
+    }, [temperatura, svgContent]); // Solo se ejecuta cuando cambian estas props
     
-    // Si no hay SVG content, usar uno por defecto
-    if (!svgContent) {
-        return (
-            <svg width="100%" height="300" viewBox="0 0 400 300" style={{maxWidth: '52%'}}>  {/* ← Cambiado height */}
-                <path 
-                    d="M50,50 L350,50 L350,250 L280,250 L280,200 L220,200 L220,250 L50,250 Z" 
-                    fill={fillColor}
-                    stroke="#081FF6" 
-                    strokeWidth="4"
-                    strokeOpacity="0.7"
-                    style={{
-                        transition: 'fill 0.8s ease-in-out'
-                    }}
-                />
-            </svg>
-        );
+    if (!svgProcesado) {
+        return <div>Cargando...</div>;
     }
-    
-    // Procesar el SVG para corregir problemas
-    const svgProcesado = svgContent
-        .replace(/height="auto"/g, 'height="300"')  // ← Corregir height
-        .replace(/fill=\{fillColor\}/g, `fill="${fillColor}"`)
-        .replace(/style=\{\{.*?\}\}/g, `style="transition: fill 0.8s ease-in-out"`)
-        .replace(/strokeWidth=/g, 'stroke-width=')
-        .replace(/strokeOpacity=/g, 'stroke-opacity=');
     
     return (
         <div 
