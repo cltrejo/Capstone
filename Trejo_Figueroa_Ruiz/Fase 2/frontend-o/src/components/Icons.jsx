@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import { useState, useEffect } from 'react';
 
 export function Room({ svgContent, temperatura }) {
