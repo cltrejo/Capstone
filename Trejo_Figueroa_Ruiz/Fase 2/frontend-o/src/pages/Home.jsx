@@ -37,7 +37,7 @@ export function Home() {
                 {/* Mostrar habitación seleccionada */}
                 {habitacionSeleccionada && (
                     <div className="habitacion-container">
-                        <h2>{habitacionSeleccionada.nombre}</h2>
+                        <h2 className='titulo-hab'>{habitacionSeleccionada.nombre}</h2>
                         <p>Temperatura actual: {habitacionSeleccionada.temperatura_actual 
                             ? `${habitacionSeleccionada.temperatura_actual}°C` 
                             : 'No disponible'}</p>
