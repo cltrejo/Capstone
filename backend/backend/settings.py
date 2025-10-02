@@ -105,7 +105,7 @@ DATABASES = {
             'driver': 'ODBC Driver 17 for SQL Server'
         }
     }
-}'''
+}
 
 DATABASES = {
     'default': {
@@ -119,7 +119,15 @@ DATABASES = {
             'driver': 'ODBC Driver 17 for SQL Server'
         }
     }
+}'''
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
+
 
 
 
