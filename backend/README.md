@@ -7,15 +7,20 @@ cd .\env\Scripts\Activate.ps1
 
 pip install -r requirements.txt
 
-py manage.py runserver
-
 ```
 
 # Como correr backend
 
 ```bash
 
+
+cd .\backend\
+
+py manage.py makemigrations core
+
 py manage.py migrate
+
+py manage.py runserver
 
 ```
 
