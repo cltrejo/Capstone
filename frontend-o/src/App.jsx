@@ -2,6 +2,7 @@ import { Routes, Route, Navigate} from 'react-router-dom'
 import { Login } from './pages/Login'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
+import { DetalleSensor } from './pages/DetalleSensor'
 import PrivateRoute from './utils/PrivateRoute'
 import './App.css'
 
@@ -19,6 +20,16 @@ function App() {
           element={
             <PrivateRoute>
               <Home />
+            </PrivateRoute>
+          }
+        />
+
+                {/* Detalle sensor protegido */}
+        <Route
+          path="/sensor/:id"
+          element={
+            <PrivateRoute>
+              <DetalleSensor />
             </PrivateRoute>
           }
         />

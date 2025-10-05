@@ -7,6 +7,7 @@ import { isAuthenticated } from '../utils/auth'
 export function Login (){
   const [credentials, setCredentials] = useState({ username: "", password: "" })
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")   // 👈 estado de error
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -26,6 +27,7 @@ export function Login (){
   const handleSubmit = async (event) =>{
     event.preventDefault()
     setLoading(true)
+    setError("")   // reset
 
     const response = await fetch("http://localhost:8000/api/login/",{
       method: "POST",
@@ -41,7 +43,7 @@ export function Login (){
       localStorage.setItem("username", data.user.username)
       navigate('/home', { replace: true })
     } else {
-      alert("Credenciales inválidas")
+      setError("⚠️ Credenciales incorrectas. Inténtalo nuevamente.")  // 👈 mensaje bonito
     }
   }
 
@@ -58,7 +60,10 @@ export function Login (){
             <button type='submit' className='submit-btn' disabled={loading}>
               {loading ? 'Entrando...' : 'Ingresar'}
             </button>
+            {/* 👇 mostramos error si existe */}
+            {error && <p className="error-msg">{error}</p>}
           </form>
+
         </div>
       </main>
     </div>

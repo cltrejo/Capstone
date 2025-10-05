@@ -12,7 +12,15 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Habitacion, Medicion, Sensor
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated,))  # <-- obligamos a autenticación
 def registro(request):
+    # validar que el usuario autenticado sea superuser
+    if not request.user.is_superuser:
+        return Response(
+            {"error": "No tienes permisos para crear usuarios."},
+            status=status.HTTP_403_FORBIDDEN
+        )
+    
     username = request.data.get('username')
     email = request.data.get('email')
     password = request.data.get('password')
@@ -133,6 +141,27 @@ def historico_sensor( request, id):
     except Sensor.DoesNotExist:
         
         return Response({'error': 'Sensor no encontrado'}, status=status.HTTP_404_NOT_FOUND)
+    
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def sensores_por_habitacion(request, id_habitacion):
+    try:
+        sensores = Sensor.objects.filter(id_habitacion=id_habitacion)
+        if not sensores.exists():
+            return Response(
+                {"error": "No hay sensores asociados a esta habitación"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = SensorSerializer(sensores, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    except Habitacion.DoesNotExist:
+        return Response(
+            {"error": "Habitación no encontrada"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
 
 '''
 POSIBLES ACTUALIZACIONES

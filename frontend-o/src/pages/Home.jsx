@@ -1,6 +1,7 @@
 import { Header } from '../components/Header';
 import { Room } from '../components/Icons';
 import { useSensor } from '../hooks/useSensor';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
 export function Home() {
@@ -10,6 +11,42 @@ export function Home() {
         idHabitacionSeleccionada, 
         setIdHabitacionSeleccionada 
     } = useSensor();
+
+
+    const navigate = useNavigate();
+
+
+    const handleDetalleClick = async () => {
+        if (!habitacionSeleccionada) {
+            alert("Selecciona primero una habitación.");
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+
+        try {
+            const res = await fetch(`http://localhost:8000/api/habitaciones/${habitacionSeleccionada.id_habitacion}/sensores/`, {
+                headers: {
+                    "Authorization": `Token ${token}`,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!res.ok) throw new Error("No se pudo obtener el sensor");
+
+            const sensores = await res.json();
+            if (sensores.length === 0) {
+                alert("No hay sensores en esta habitación");
+                return;
+            }
+
+            const sensorId = sensores[0].id_sensor; // Tomar el primero si hay más de uno
+            navigate(`/sensor/${sensorId}`);
+        } catch (err) {
+            console.error(err);
+            alert("Error al buscar el sensor");
+        }
+    };
 
     return (
         <div className="content">
@@ -42,10 +79,19 @@ export function Home() {
                             ? `${habitacionSeleccionada.temperatura_actual}°C` 
                             : 'No disponible'}</p>
 
+                            {/* 👇 alerta si temperatura alta */}
+                        {habitacionSeleccionada.temperatura_actual >= 27 && (
+                        <p className="alerta-temp">🔥 Temperatura alta detectada</p>
+                        )}
+
                         <Room 
                         svgContent={habitacionSeleccionada.forma_svg}
                         temperatura={habitacionSeleccionada.temperatura_actual}
                         />
+
+                        <button className="detalle-btn" onClick={handleDetalleClick}>
+                            Ver detalle del sensor
+                        </button>
                     </div>
                 )}
             </main>

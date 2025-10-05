@@ -92,3 +92,46 @@ main {
     color: #2c3e50;
     margin-bottom: 20px;
 }
+
+.detalle-btn {
+  background: linear-gradient(135deg, #4a90e2, #081FF6);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.detalle-btn:hover {
+  background: linear-gradient(135deg, #5aa0f2, #468cd0);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+}
+
+.detalle-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.alerta-temp {
+  color: #d62828;
+  font-weight: bold;
+  margin: 8px 0;
+  padding: 6px 10px;
+  border-radius: 5px;
+  background: #ffe6e6;
+  border: 1px solid #d62828;
+  display: inline-block;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}

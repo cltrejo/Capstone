@@ -1,0 +1,38 @@
+.detalle-wrapper {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chart-card {
+  background: #fff; /* Fondo blanco */
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 1200px
+}
+
+.sensor-nom {
+  font-size: 28px;
+  font-weight: 700;
+  color: #081FF6;
+  text-align: center;
+  margin: 20px 0;
+  position: relative;
+  letter-spacing: 1px;
+}
+
+/* Línea decorativa debajo */
+.sensor-nom::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: #081FF6;
+  margin: 8px auto 0;
+  border-radius: 2px;
+}
+
