@@ -3,7 +3,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(135deg, #b8b9fe 0%, #020971 100%);
+  background: linear-gradient(135deg, #e2e9fb, #e5d4f9);
 }
 
 /* Header */
