@@ -10,22 +10,63 @@
     flex-direction: column;
 }
 
-/* Layout principal en columna */
-main {
+/* Contenedor principal */
+.main-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 40px 20px;
-    gap: 30px; /* Espacio entre selector y contenido */
+    gap: 40px;
 }
 
-/* Selector de habitaciones - MEJORADO */
+/* Selector centrado arriba */
+.selector-top {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Contenedor inferior con PDF y panel */
+.bottom-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1200px;
+    gap: 20px;
+}
+
+/* PDF a la izquierda */
+.pdf-container {
+    flex: 1;
+    max-width: 50%;
+    height: 50vh;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    background-color: white;
+}
+
+.pdf-frame {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* Panel derecho */
+.right-panel {
+    flex: 1;
+    max-width: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+/* Selector de habitaciones */
 .habitacion-selector {
     background-color: white;
     padding: 20px 25px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    z-index: 10;
     display: flex;
     align-items: center;
     gap: 15px;
@@ -35,7 +76,6 @@ main {
 
 .habitacion-selector label {
     font-weight: 600;
-    margin-bottom: 0;
     color: #333;
     font-size: 16px;
     white-space: nowrap;
@@ -63,10 +103,10 @@ main {
     border-color: #c1c1c1;
 }
 
-/* Contenedor de la habitación seleccionada (sala) */
+/* Contenedor de la habitación seleccionada */
 .habitacion-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 600px;
     background-color: #fff;
     border-radius: 16px;
     padding: 30px;
@@ -79,6 +119,7 @@ main {
     margin-bottom: 15px;
     font-size: 26px;
     font-weight: 700;
+    color: #2c3e50;
 }
 
 .habitacion-container p {
@@ -86,11 +127,6 @@ main {
     color: #555;
     font-size: 18px;
     font-weight: 500;
-}
-
-.titulo-hab {
-    color: #2c3e50;
-    margin-bottom: 20px;
 }
 
 .detalle-btn {
@@ -134,4 +170,20 @@ main {
   0% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.05); opacity: 0.8; }
   100% { transform: scale(1); opacity: 1; }
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+    .bottom-section {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .pdf-container, .right-panel {
+        max-width: 100%;
+    }
+
+    .pdf-container {
+        height: 60vh;
+    }
 }

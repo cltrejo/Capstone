@@ -12,9 +12,7 @@ export function Home() {
         setIdHabitacionSeleccionada 
     } = useSensor();
 
-
     const navigate = useNavigate();
-
 
     const handleDetalleClick = async () => {
         if (!habitacionSeleccionada) {
@@ -40,7 +38,7 @@ export function Home() {
                 return;
             }
 
-            const sensorId = sensores[0].id_sensor; // Tomar el primero si hay más de uno
+            const sensorId = sensores[0].id_sensor; 
             navigate(`/sensor/${sensorId}`);
         } catch (err) {
             console.error(err);
@@ -51,49 +49,65 @@ export function Home() {
     return (
         <div className="content">
             <header>
-                <Header/>
+                <Header />
             </header>
 
-            <main>
-                {/* Selector de habitaciones */}
-                <div className="habitacion-selector">
-                    <label>Seleccionar Habitación: </label>
-                    <select 
-                        value={idHabitacionSeleccionada || ''}
-                        onChange={(e) => setIdHabitacionSeleccionada(parseInt(e.target.value))}
-                    >
-                        <option value="">Selecciona una habitación</option>
-                        {habitaciones.map(hab => (
-                            <option key={hab.id_habitacion} value={hab.id_habitacion}>
-                                {hab.nombre} ({hab.temperatura_actual ? `${hab.temperatura_actual}°C` : 'Sin datos'})
-                            </option>
-                        ))}
-                    </select>
+            <main className="main-container">
+                {/* Selector centrado arriba */}
+                <div className="selector-top">
+                    <div className="habitacion-selector">
+                        <label>Seleccionar Habitación: </label>
+                        <select 
+                            value={idHabitacionSeleccionada || ''}
+                            onChange={(e) => setIdHabitacionSeleccionada(parseInt(e.target.value))}
+                        >
+                            <option value="">Selecciona una habitación</option>
+                            {habitaciones.map(hab => (
+                                <option key={hab.id_habitacion} value={hab.id_habitacion}>
+                                    {hab.nombre} ({hab.temperatura_actual ? `${hab.temperatura_actual}°C` : 'Sin datos'})
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
 
-                {/* Mostrar habitación seleccionada */}
-                {habitacionSeleccionada && (
-                    <div className="habitacion-container">
-                        <h2 className='titulo-hab'>{habitacionSeleccionada.nombre}</h2>
-                        <p>Temperatura actual: {habitacionSeleccionada.temperatura_actual 
-                            ? `${habitacionSeleccionada.temperatura_actual}°C` 
-                            : 'No disponible'}</p>
-
-                            {/* 👇 alerta si temperatura alta */}
-                        {habitacionSeleccionada.temperatura_actual >= 27 && (
-                        <p className="alerta-temp">🔥 Temperatura alta detectada</p>
-                        )}
-
-                        <Room 
-                        svgContent={habitacionSeleccionada.forma_svg}
-                        temperatura={habitacionSeleccionada.temperatura_actual}
-                        />
-
-                        <button className="detalle-btn" onClick={handleDetalleClick}>
-                            Ver detalle del sensor
-                        </button>
+                {/* Sección inferior con PDF y panel */}
+                <div className="bottom-section">
+                    <div className="pdf-container">
+                        <iframe
+                            src="/docs/dashboard.pdf"
+                            title="Dashboard PDF"
+                            className="pdf-frame"
+                        ></iframe>
                     </div>
-                )}
+
+                    <div className="right-panel">
+                        {habitacionSeleccionada && (
+                            <div className="habitacion-container">
+                                <h2 className="titulo-hab">{habitacionSeleccionada.nombre}</h2>
+                                <p>
+                                    Temperatura actual:{" "}
+                                    {habitacionSeleccionada.temperatura_actual 
+                                        ? `${habitacionSeleccionada.temperatura_actual}°C` 
+                                        : 'No disponible'}
+                                </p>
+
+                                {habitacionSeleccionada.temperatura_actual >= 27 && (
+                                    <p className="alerta-temp">🔥 Temperatura alta detectada</p>
+                                )}
+
+                                <Room 
+                                    svgContent={habitacionSeleccionada.forma_svg}
+                                    temperatura={habitacionSeleccionada.temperatura_actual}
+                                />
+
+                                <button className="detalle-btn" onClick={handleDetalleClick}>
+                                    Ver detalle del sensor
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </main>
         </div>
     );
