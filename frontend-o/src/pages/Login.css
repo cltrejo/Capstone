@@ -3,7 +3,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-  background: linear-gradient(135deg, #e2e9fb, #e5d4f9);
+  background: linear-gradient(135deg, #375eff, #14269b);
 }
 
 /* Header */
@@ -116,7 +116,7 @@ main > div {
 .submit-btn {
     width: 100%;
     padding: 14px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #0d22c6 0%, #0c145a 100%);
     color: white;
     border: none;
     border-radius: 8px;
