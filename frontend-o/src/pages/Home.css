@@ -26,42 +26,11 @@
     width: 100%;
 }
 
-/* Contenedor inferior con PDF y panel */
-.bottom-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch; /* <- Hace que ambos hijos tengan la misma altura */
-    width: 100%;
-    max-width: 1200px;
-    gap: 20px;
-}
-
-/* PDF a la izquierda */
-.pdf-container {
-    flex: 1;
-    max-width: 50%;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-}
-
-.pdf-frame {
-    width: 100%;
-    height: 100%;
-    border: none;
-    flex-grow: 1; /* <- Se expande al tamaño del contenedor */
-}
-
-/* Panel derecho */
-.right-panel {
-    flex: 1;
-    max-width: 50%;
+/* Sección de la habitación */
+.habitacion-section {
     display: flex;
     justify-content: center;
-    align-items: stretch; /* <- Para igualar altura con PDF */
+    width: 100%;
 }
 
 /* Selector de habitaciones */
@@ -116,9 +85,6 @@
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     text-align: center;
     border: 1px solid #f0f0f0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center; /* centra verticalmente el contenido */
 }
 
 .habitacion-container h2 {
@@ -131,6 +97,18 @@
 .habitacion-container p {
     margin-bottom: 25px;
     color: #555;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Mensaje cuando no hay habitación seleccionada */
+.no-habitacion {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    color: #666;
     font-size: 18px;
     font-weight: 500;
 }
@@ -179,17 +157,24 @@
 }
 
 /* Responsivo */
-@media (max-width: 900px) {
-    .bottom-section {
+@media (max-width: 768px) {
+    .main-container {
+        padding: 20px 15px;
+        gap: 30px;
+    }
+
+    .habitacion-selector {
         flex-direction: column;
-        align-items: center;
+        min-width: auto;
+        width: 100%;
+        max-width: 300px;
     }
 
-    .pdf-container, .right-panel {
-        max-width: 100%;
+    .habitacion-selector select {
+        width: 100%;
     }
 
-    .pdf-container {
-        height: 60vh;
+    .habitacion-container {
+        padding: 20px;
     }
 }

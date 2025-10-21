@@ -53,7 +53,7 @@ export function Home() {
             </header>
 
             <main className="main-container">
-                {/* Selector centrado arriba */}
+                {/* Selector de habitación */}
                 <div className="selector-top">
                     <div className="habitacion-selector">
                         <label>Seleccionar Habitación: </label>
@@ -71,42 +71,36 @@ export function Home() {
                     </div>
                 </div>
 
-                {/* Sección inferior con PDF y panel */}
-                <div className="bottom-section">
-                    <div className="pdf-container">
-                        <iframe
-                            src="/docs/dashboard.pdf"
-                            title="Dashboard PDF"
-                            className="pdf-frame"
-                        ></iframe>
-                    </div>
+                {/* Contenedor de la habitación seleccionada */}
+                <div className="habitacion-section">
+                    {habitacionSeleccionada ? (
+                        <div className="habitacion-container">
+                            <h2 className="titulo-hab">{habitacionSeleccionada.nombre}</h2>
+                            <p>
+                                Temperatura actual:{" "}
+                                {habitacionSeleccionada.temperatura_actual 
+                                    ? `${habitacionSeleccionada.temperatura_actual}°C` 
+                                    : 'No disponible'}
+                            </p>
 
-                    <div className="right-panel">
-                        {habitacionSeleccionada && (
-                            <div className="habitacion-container">
-                                <h2 className="titulo-hab">{habitacionSeleccionada.nombre}</h2>
-                                <p>
-                                    Temperatura actual:{" "}
-                                    {habitacionSeleccionada.temperatura_actual 
-                                        ? `${habitacionSeleccionada.temperatura_actual}°C` 
-                                        : 'No disponible'}
-                                </p>
+                            {habitacionSeleccionada.temperatura_actual >= 27 && (
+                                <p className="alerta-temp">🔥 Temperatura alta detectada</p>
+                            )}
 
-                                {habitacionSeleccionada.temperatura_actual >= 27 && (
-                                    <p className="alerta-temp">🔥 Temperatura alta detectada</p>
-                                )}
+                            <Room 
+                                svgContent={habitacionSeleccionada.forma_svg}
+                                temperatura={habitacionSeleccionada.temperatura_actual}
+                            />
 
-                                <Room 
-                                    svgContent={habitacionSeleccionada.forma_svg}
-                                    temperatura={habitacionSeleccionada.temperatura_actual}
-                                />
-
-                                <button className="detalle-btn" onClick={handleDetalleClick}>
-                                    Ver detalle del sensor
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                            <button className="detalle-btn" onClick={handleDetalleClick}>
+                                Ver detalle del sensor
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="no-habitacion">
+                            <p>Selecciona una habitación para ver los detalles</p>
+                        </div>
+                    )}
                 </div>
             </main>
         </div>

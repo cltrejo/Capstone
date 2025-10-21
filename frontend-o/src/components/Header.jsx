@@ -29,9 +29,10 @@ export function Header (){
                 alt='Logo' 
                 /> 
                                {/* Botón que solo aparece en /home */}
-                {location.pathname === '/home' && (
+                {(location.pathname === '/home' || location.pathname === '/dashboard') &&(
                     <>
                         <p className='msg'>Bienvendido {user.toUpperCase()}!</p>
+                        <a className='msg' onClick={()=>{navigate('/dashboard')}} style={{cursor: 'pointer'}}>Dashboard</a>
                         <button className='btn-cerrar' onClick={logout}>
                             Cerrar Sesión
                         </button>
