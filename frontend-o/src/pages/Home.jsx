@@ -33,12 +33,25 @@ export function Home() {
             if (!res.ok) throw new Error("No se pudo obtener el sensor");
 
             const sensores = await res.json();
+            console.log("Respuesta completa de sensores:", sensores); // ← DEBUG
+            
             if (sensores.length === 0) {
                 alert("No hay sensores en esta habitación");
                 return;
             }
 
-            const sensorId = sensores[0].id_sensor; 
+            // Verifica qué campos tiene el primer sensor
+            console.log("Primer sensor:", sensores[0]); // ← DEBUG
+            
+            // Prueba con diferentes campos posibles
+            const sensorId = sensores[0].id_thermostato || sensores[0].id || sensores[0].id_sensor;
+            console.log("Sensor ID encontrado:", sensorId); // ← DEBUG
+            
+            if (!sensorId) {
+                alert("No se pudo identificar el sensor");
+                return;
+            }
+
             navigate(`/sensor/${sensorId}`);
         } catch (err) {
             console.error(err);

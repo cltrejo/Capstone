@@ -1,13 +1,163 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
-from django.db import models
+#CUSTOM USER CON CAMPO TIPO_USUARIO
+class USUARIO(AbstractUser):
+    TIPOS = [
+        ('ADMIN', 'Administrador'),
+        ('COMUN', 'comun')
+    ]
+    tipo_usuario = models.CharField(max_length=20, choices=TIPOS, default='COMUN')
 
-# =============================================
-# MODELOS EXISTENTES (mantener)
-# =============================================
+    class Meta:
+        db_table = 'USUARIO'
 
-class Habitacion(models.Model):
+class ESTACION_METEOROLOGICA(models.Model):
+    codigo_nacional = models.CharField(max_length=100, primary_key=True)
+    nombre_estacion = models.CharField(max_length=100)
+    latitud = models.FloatField()
+    longitud = models.FloatField()
+    altura = models.IntegerField()
+
+    class Meta:
+        db_table = 'ESTACION_METEOROLOGICA'
+
+
+class OFICINA(models.Model):
+    id_oficina = models.AutoField(primary_key=True)
+    descripcion = models.CharField(max_length=250)
+    georeferencia = models.CharField(max_length=250)
+
+    class Meta:
+        db_table = 'OFICINA'
+
+
+class OFICINA_ESTACION(models.Model):
+    id_oficinaestacion = models.AutoField(primary_key=True)
+    principal = models.CharField(max_length=100)
+    distancia_km = models.IntegerField()
+    codigo_nacional = models.ForeignKey(
+        ESTACION_METEOROLOGICA,
+        on_delete=models.CASCADE,
+        db_column='codigo_nacional'
+    )
+    id_oficina = models.ForeignKey(
+        OFICINA,
+        on_delete=models.CASCADE,
+        db_column='id_oficina'
+    )
+
+    class Meta:
+        db_table = 'OFICINA_ESTACION'
+
+
+class MEDICION_METEOROLOGICA(models.Model):
+    id_medicionmeteorologica = models.AutoField(primary_key=True)
+    momento = models.DateTimeField()
+    temperatura = models.FloatField()
+    temperatura_minima_12h = models.FloatField()
+    temperatura_maxima_12h = models.FloatField()
+    humedad_relativa = models.FloatField()
+    codigo_nacional = models.ForeignKey(
+        ESTACION_METEOROLOGICA,
+        on_delete=models.CASCADE,
+        db_column='codigo_nacional'
+    )
+
+    class Meta:
+        db_table = 'MEDICION_METEOROLOGICA'
+
+
+class POSICION_SOLAR(models.Model):
+    id_posicionsolar = models.AutoField(primary_key=True)
+    momento = models.DateTimeField()
+    elevacion = models.FloatField()
+    azimut = models.FloatField()
+    codigo_nacional = models.ForeignKey(
+        ESTACION_METEOROLOGICA,
+        on_delete=models.CASCADE,
+        db_column='codigo_nacional'
+    )
+
+    class Meta:
+        db_table = 'POSICION_SOLAR'
+
+
+class TIPO_ZONA(models.Model):
+    id_tipozona = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'TIPO_ZONA'
+
+
+class ZONA(models.Model):
+    id_zona = models.AutoField(primary_key=True)
+    descripcion = models.CharField(max_length=100)
+    orientacion = models.CharField(max_length=100)
+    superficie_m3 = models.IntegerField()
+    cantidad_equipos = models.IntegerField()
+    id_oficina = models.ForeignKey(
+        OFICINA,
+        on_delete=models.CASCADE,
+        db_column='id_oficina'
+    )
+    id_tipozona = models.ForeignKey(
+        TIPO_ZONA,
+        on_delete=models.CASCADE,
+        db_column='id_tipozona'
+    )
+
+    class Meta:
+        db_table = 'ZONA'
+
+
+class MATERIAL_ZONA(models.Model):
+    id_material = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100)
+    cantidad_m2 = models.IntegerField()
+    id_zona = models.ForeignKey(
+        ZONA,
+        on_delete=models.CASCADE,
+        db_column='id_zona'
+    )
+
+    class Meta:
+        db_table = 'MATERIAL_ZONA'
+
+
+class SENSOR(models.Model):
+    id_sensor = models.AutoField(primary_key=True)
+    tipo = models.CharField(max_length=50)
+    nombre = models.CharField(max_length=50)
+    activo = models.BooleanField()
+    id_zona = models.ForeignKey(
+        ZONA,
+        on_delete=models.CASCADE,
+        db_column='id_zona'
+    )
+
+    class Meta:
+        db_table = 'SENSOR'
+
+
+class MEDICION_SENSOR(models.Model):
+    id_medicionsensor = models.AutoField(primary_key=True)
+    valor = models.IntegerField()
+    unidad = models.CharField(max_length=100)
+    timestamp = models.DateTimeField()
+    id_sensor = models.ForeignKey(
+        SENSOR,
+        on_delete=models.CASCADE,
+        db_column='id_sensor'
+    )
+
+    class Meta:
+        db_table = 'MEDICION_SENSOR'
+
+#######TABLA USADA EN SIMULACION WEB
+
+class HABITACION(models.Model):
     id_habitacion = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
     descripcion = models.TextField(blank=True)
@@ -15,217 +165,45 @@ class Habitacion(models.Model):
     
     def __str__(self):
         return self.nombre
-
-class Sensor(models.Model):
-    TIPO_CHOICES = [
-        ('temperatura', 'Temperatura'),
-        ('humedad', 'Humedad'),
-        ('movimiento', 'Movimiento'),
-        ('co2', 'CO2'),
-    ]
-    id_sensor = models.AutoField(primary_key=True)
-    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
-    nombre = models.CharField(max_length=100)
-    activo = models.BooleanField(default=True)
-    id_habitacion = models.ForeignKey(Habitacion, on_delete=models.CASCADE)
     
-    def __str__(self):
-        return f"{self.nombre} ({self.tipo})"
+    class Meta:
+        db_table = 'HABITACION'
 
-class Medicion(models.Model):
-    id_medicion = models.AutoField(primary_key=True)
-    valor = models.DecimalField(max_digits=8, decimal_places=2)
-    unidad = models.CharField(max_length=10)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    id_sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)
-    
-    def __str__(self):
-        return f"{self.valor} {self.unidad} - {self.timestamp}"
+#########################################
 
-# =============================================
-# NUEVOS MODELOS DEL PROFESOR
-# =============================================
-
-class Oficina(models.Model):
-    id_oficina = models.AutoField(primary_key=True)
-    descripcion = models.CharField(max_length=200, blank=True, null=True)
-    georeferencia = models.CharField(max_length=120, blank=True, null=True)
-    
-    def __str__(self):
-        return self.descripcion or f"Oficina {self.id_oficina}"
-
-class TipoZona(models.Model):
-    id_tipozona = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=80)
-    
-    def __str__(self):
-        return self.nombre
-
-class Zona(models.Model):
-    ORIENTACION_CHOICES = [
-        ('N', 'Norte'),
-        ('S', 'Sur'),
-        ('E', 'Este'),
-        ('O', 'Oeste'),
-    ]
-    
-    id_zona = models.AutoField(primary_key=True)
-    descripcion = models.CharField(max_length=200, blank=True, null=True)
-    orientacion = models.CharField(max_length=1, choices=ORIENTACION_CHOICES, blank=True, null=True)
-    superficie_m3 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    cantidad_equipos = models.IntegerField(blank=True, null=True)
-    id_oficina = models.ForeignKey(Oficina, on_delete=models.CASCADE)
-    id_tipozona = models.ForeignKey(TipoZona, on_delete=models.SET_NULL, blank=True, null=True)
-    id_habitacion = models.ForeignKey(Habitacion, on_delete=models.SET_NULL, blank=True, null=True)
-    
-    def __str__(self):
-        return self.descripcion or f"Zona {self.id_zona}"
-
-class Thermostato(models.Model):
+class THERMOSTATO(models.Model):
     id_thermostato = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=120)
-    id_zona = models.ForeignKey(Zona, on_delete=models.CASCADE)
-    id_sensor = models.OneToOneField(
-        Sensor, 
-        on_delete=models.CASCADE, 
-        blank=True, 
-        null=True,
-        help_text="Sensor asociado a este thermostat"
-    )
-    
-    def __str__(self):
-        return f"{self.nombre} - {self.id_zona}"
-
-class MaterialZona(models.Model):
-    id_materialzona = models.AutoField(primary_key=True)
-    id_zona = models.ForeignKey(Zona, on_delete=models.CASCADE)
-    nombre = models.CharField(max_length=120, blank=True, null=True)
-    cantidad_m2 = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['id_zona', 'nombre'],
-                name='unique_material_zona_nombre'
-            )
-        ]
-    
-    def __str__(self):
-        return f"{self.nombre} - {self.id_zona}"
-
-# =============================================
-# MODELOS METEOROLÓGICOS
-# =============================================
-
-class EstacionMeteorologica(models.Model):
-    codigo_nacional = models.CharField(max_length=10, primary_key=True)
-    nombre_estacion = models.CharField(max_length=100)
-    latitud = models.DecimalField(max_digits=10, decimal_places=5)
-    longitud = models.DecimalField(max_digits=10, decimal_places=5)
-    altura = models.IntegerField()
-    
-    def __str__(self):
-        return f"{self.nombre_estacion} ({self.codigo_nacional})"
-
-class MedicionMeteorologica(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    codigo_nacional = models.ForeignKey(EstacionMeteorologica, on_delete=models.CASCADE)
-    momento = models.DateTimeField()
-    temperatura = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    temperatura_minima_12h = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    temperatura_maxima_12h = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    humedad_relativa = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    
-    class Meta:
-        indexes = [
-            models.Index(fields=['codigo_nacional', 'momento']),
-        ]
-    
-    def __str__(self):
-        return f"{self.codigo_nacional} - {self.momento}"
-
-class PosicionSolar(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    codigo_nacional = models.ForeignKey(EstacionMeteorologica, on_delete=models.CASCADE)
-    momento = models.DateTimeField()
-    elevacion = models.DecimalField(max_digits=6, decimal_places=3, blank=True, null=True)
-    azimut = models.DecimalField(max_digits=6, decimal_places=3, blank=True, null=True)
-    
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['codigo_nacional', 'momento'],
-                name='unique_posicion_solar'
-            )
-        ]
-        indexes = [
-            models.Index(fields=['momento']),
-        ]
-    
-    def __str__(self):
-        return f"{self.codigo_nacional} - {self.momento}"
-
-class PrediccionClima(models.Model):
-    id_registro = models.BigAutoField(primary_key=True)
-    fecha_hora_inicio = models.DateTimeField()
-    temperatura = models.DecimalField(max_digits=4, decimal_places=1)
-    sensacion_termica = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
-    humedad_relativa = models.SmallIntegerField(blank=True, null=True)
-    cobertura_nubes = models.SmallIntegerField(blank=True, null=True)
-    prob_precipitacion = models.SmallIntegerField(blank=True, null=True)
-    precipitacion_qpf = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
-    viento_velocidad = models.DecimalField(max_digits=4, decimal_places=1, blank=True, null=True)
-    viento_direccion_cardinal = models.CharField(max_length=10, blank=True, null=True)
-    
-    class Meta:
-        indexes = [
-            models.Index(fields=['fecha_hora_inicio']),
-        ]
-    
-    def __str__(self):
-        return f"Predicción {self.fecha_hora_inicio}"
-
-class OficinaEstacion(models.Model):
-    id_oficina = models.ForeignKey(Oficina, on_delete=models.CASCADE)
-    codigo_nacional = models.ForeignKey(EstacionMeteorologica, on_delete=models.CASCADE)
-    principal = models.BooleanField(default=False)
-    distancia_km = models.DecimalField(max_digits=6, decimal_places=2, blank=True, null=True)
-    
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=['id_oficina', 'codigo_nacional'],
-                name='unique_oficina_estacion'
-            )
-        ]
-    
-    def __str__(self):
-        principal_str = " (Principal)" if self.principal else ""
-        return f"{self.id_oficina} - {self.codigo_nacional}{principal_str}"
-'''
-class Habitacion(models.Model):
-    id_habitacion = models.AutoField(primary_key=True)
-    nombre = models.CharField(max_length=100)  # "Sala Principal"
-    descripcion = models.TextField(blank=True)
-    forma_svg = models.TextField()  # O FileField si guardas archivos
-    
-class Sensor(models.Model):
-    TIPO_CHOICES = [
-        ('temperatura', 'Temperatura'),
-        ('humedad', 'Humedad'),
-        ('movimiento', 'Movimiento'),
-        ('co2', 'CO2'),
-    ]
-    id_sensor = models.AutoField(primary_key=True)
-    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
     nombre = models.CharField(max_length=100)
-    activo = models.BooleanField(default=True)
-    id_habitacion = models.ForeignKey(Habitacion, on_delete=models.CASCADE)
-    
-    
-class Medicion(models.Model):
-    id_medicion = models.AutoField(primary_key=True)
-    valor = models.DecimalField(max_digits=8, decimal_places=2)
-    unidad = models.CharField(max_length=10)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    id_sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE)'''
+    '''
+    ESTA ES LA FOREIGN KEY CORRECTA
+    PERO PARA SIMULAR HACEMOS FOREIGN CON
+    TABLA HABITACION -> CAMBIAR CUANDO NO SE ESTE SIMULANDO
+    id_zona = models.ForeignKey(
+        ZONA,
+        on_delete=models.CASCADE,
+        db_column='id_zona'
+    )'''
+
+    id_habitacion = models.ForeignKey(
+        HABITACION,
+        on_delete=models.CASCADE,
+        db_column='id_habitacion'
+    )
+
+    class Meta:
+        db_table = 'THERMOSTATO'
+
+
+class MEDICION_THERMOSTATO(models.Model):
+    id_medicionthermostato = models.AutoField(primary_key=True)
+    valor = models.IntegerField()
+    unidad = models.CharField(max_length=100)
+    timestamp = models.DateTimeField()
+    id_thermostato = models.ForeignKey(
+        THERMOSTATO,
+        on_delete=models.CASCADE,
+        db_column='id_thermostato'
+    )
+
+    class Meta:
+        db_table = 'MEDICION_THERMOSTATO'

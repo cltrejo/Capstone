@@ -1,12 +1,13 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
-from .models import Habitacion, Medicion, Sensor
+from django.contrib.auth import authenticate, get_user_model
+from .models import HABITACION, MEDICION_THERMOSTATO, THERMOSTATO
+
+User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email')
+        fields = ('id', 'username', 'email', 'tipo_usuario')
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -26,40 +27,38 @@ class LoginSerializer(serializers.Serializer):
 # CLASES DE MODELS
 class MedicionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Medicion
+        model = MEDICION_THERMOSTATO
         fields = '__all__'
 
-class SensorSerializer(serializers.ModelSerializer):
+class ThermostatoSerializer(serializers.ModelSerializer):
     ultima_medicion = serializers.SerializerMethodField()
 
     class Meta:
-        model = Sensor
+        model = THERMOSTATO
         fields = '__all__'
 
     def get_ultima_medicion(self, obj):
-        ultima = Medicion.objects.filter(id_sensor=obj).last()  # ← CORREGIDO
+        ultima = MEDICION_THERMOSTATO.objects.filter(id_thermostato=obj).last()  # ← CORREGIDO
         if ultima:
             return MedicionSerializer(ultima).data
         return None
     
 class HabitacionSerializer(serializers.ModelSerializer):
-    sensores = SensorSerializer(many=True, read_only=True)
+    termostatos = ThermostatoSerializer(many=True, read_only=True)
     temperatura_actual = serializers.SerializerMethodField()
 
     class Meta:
-        model = Habitacion
+        model = HABITACION
         fields = '__all__'
 
     def get_temperatura_actual(self, obj):
         # Obtener el sensor de temperatura de esta habitación
-        sensor_temperatura = Sensor.objects.filter(
+        termostato_temperatura = THERMOSTATO.objects.filter(
             id_habitacion=obj,  # ← CORREGIDO
-            tipo='temperatura', 
-            activo=True
         ).first()
         
-        if sensor_temperatura:
-            ultima_medicion = Medicion.objects.filter(id_sensor=sensor_temperatura).last()  # ← CORREGIDO
+        if termostato_temperatura:
+            ultima_medicion = MEDICION_THERMOSTATO.objects.filter(id_thermostato=termostato_temperatura).last()  # ← CORREGIDO
             if ultima_medicion:
                 return float(ultima_medicion.valor)
         return None

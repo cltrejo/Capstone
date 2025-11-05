@@ -1,40 +1,53 @@
 import random
 from django.shortcuts import render
+from django.utils import timezone
 
 # Create your views here.
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User
-from .serializers import HabitacionSerializer, MedicionSerializer, SensorSerializer, UserSerializer, LoginSerializer
+from django.contrib.auth import get_user_model
+from .serializers import HabitacionSerializer, MedicionSerializer, ThermostatoSerializer, UserSerializer, LoginSerializer
 from rest_framework.permissions import IsAuthenticated
-from .models import Habitacion, Medicion, Sensor
+from .models import HABITACION, MEDICION_THERMOSTATO, THERMOSTATO
+
+User = get_user_model()
 
 @api_view(['POST'])
-@permission_classes((IsAuthenticated,))  # <-- obligamos a autenticación
+#ENDPOINT PREVIAMENTE CON AUTENTICACION REQUERIDA @permission_classes((IsAuthenticated,))
 def registro(request):
-    # validar que el usuario autenticado sea superuser
-    if not request.user.is_superuser:
-        return Response(
-            {"error": "No tienes permisos para crear usuarios."},
-            status=status.HTTP_403_FORBIDDEN
-        )
-    
+    # Datos del request
     username = request.data.get('username')
     email = request.data.get('email')
     password = request.data.get('password')
-    
+    first_name = request.data.get('first_name', '')
+    last_name = request.data.get('last_name', '')
+    tipo_usuario = request.data.get('tipo_usuario', 'COMUN')  # Por defecto
+
+    # Validaciones básicas
+    if not username or not password:
+        return Response({'error': 'Debe ingresar un nombre de usuario y contraseña.'}, status=400)
+
     if User.objects.filter(username=username).exists():
-        return Response({'error': 'Usuario ya existe'}, status=400)
-    
-    user = User.objects.create_user(username=username, email=email, password=password)
+        return Response({'error': 'El usuario ya existe.'}, status=400)
+
+    # Crear usuario común
+    user = User.objects.create_user(
+        username=username,
+        email=email,
+        password=password,
+        first_name=first_name,
+        last_name=last_name,
+        tipo_usuario=tipo_usuario
+    )
+
     token, created = Token.objects.get_or_create(user=user)
-    
+
     return Response({
         'token': token.key,
         'user': UserSerializer(user).data
-    })
+    }, status=200)
 
 @api_view(['POST'])
 def login(request):
@@ -77,7 +90,7 @@ ENDPOINTS HA DESARROLLAR
 @permission_classes((IsAuthenticated,))
 def lista_habitaciones(request):
     if request.method == 'GET':
-        query = Habitacion.objects.all()
+        query = HABITACION.objects.all()
         serializer = HabitacionSerializer(query, many = True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'POST':
@@ -93,8 +106,8 @@ def lista_habitaciones(request):
 @permission_classes((IsAuthenticated,))
 def detalle_habitacion(request, id):
     try:
-        habitacion = Habitacion.objects.get(id_habitacion = id)
-    except Habitacion.DoesNotExist:
+        habitacion = HABITACION.objects.get(id_habitacion = id)
+    except HABITACION.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
         serializer = HabitacionSerializer(habitacion)
@@ -113,13 +126,13 @@ def detalle_habitacion(request, id):
         
 @api_view(['GET', 'POST'])
 @permission_classes((IsAuthenticated,))
-def lista_sensores(request):
+def lista_thermostatos(request):
     if request.method == 'GET':
-        query = Sensor.objects.all()
-        serializer = SensorSerializer(query, many = True)
+        query = THERMOSTATO.objects.all()
+        serializer = ThermostatoSerializer(query, many = True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'POST':
-        serializer = SensorSerializer(data = request.data)
+        serializer = ThermostatoSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -128,17 +141,17 @@ def lista_sensores(request):
         
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
-def historico_sensor( request, id):
+def historico_thermostato( request, id):
     try:
-        sensor = Sensor.objects.get(id_sensor = id)
+        thermostato = THERMOSTATO.objects.get(id_thermostato = id)
 
-        mediciones = Medicion.objects.filter(id_sensor = id)
+        mediciones = MEDICION_THERMOSTATO.objects.filter(id_thermostato = id)
 
         serializer = MedicionSerializer(mediciones, many = True)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    except Sensor.DoesNotExist:
+    except THERMOSTATO.DoesNotExist:
         
         return Response({'error': 'Sensor no encontrado'}, status=status.HTTP_404_NOT_FOUND)
     
@@ -146,17 +159,17 @@ def historico_sensor( request, id):
 @permission_classes((IsAuthenticated,))
 def sensores_por_habitacion(request, id_habitacion):
     try:
-        sensores = Sensor.objects.filter(id_habitacion=id_habitacion)
-        if not sensores.exists():
+        thermostatos = THERMOSTATO.objects.filter(id_habitacion=id_habitacion)
+        if not thermostatos.exists():
             return Response(
                 {"error": "No hay sensores asociados a esta habitación"},
                 status=status.HTTP_404_NOT_FOUND
             )
 
-        serializer = SensorSerializer(sensores, many=True)
+        serializer = ThermostatoSerializer(thermostatos, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    except Habitacion.DoesNotExist:
+    except HABITACION.DoesNotExist:
         return Response(
             {"error": "Habitación no encontrada"},
             status=status.HTTP_404_NOT_FOUND
@@ -208,7 +221,7 @@ def historico_sensor(request, id):
 @permission_classes((IsAuthenticated,))
 def lista_mediciones(request):
     if request.method == 'GET':
-        query = Medicion.objects.all()
+        query = MEDICION_THERMOSTATO.objects.all()
         serializer = MedicionSerializer(query, many = True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'POST':
@@ -226,11 +239,11 @@ def simular_temperatura(request):
     """
     Simula cambios de temperatura para todos los sensores activos
     """
-    sensores = Sensor.objects.filter(tipo='temperatura', activo=True)
+    thermostatos = THERMOSTATO.objects.all()
     
-    for sensor in sensores:
+    for thermostato in thermostatos:
         # Simular temperatura entre 18°C y 30°C con variación realista
-        temperatura_anterior = Medicion.objects.filter(id_sensor=sensor).last()
+        temperatura_anterior = MEDICION_THERMOSTATO.objects.filter(id_thermostato=thermostato).last()
         
         if temperatura_anterior:
             temp_anterior = float(temperatura_anterior.valor)
@@ -240,10 +253,11 @@ def simular_temperatura(request):
         else:
             nueva_temperatura = random.uniform(20.0, 25.0)  # Temperatura inicial
         
-        Medicion.objects.create(
-            id_sensor=sensor,
+        MEDICION_THERMOSTATO.objects.create(
+            id_thermostato=thermostato,
             valor=nueva_temperatura,
-            unidad='°C'
+            unidad='°C',
+            timestamp=timezone.now()
         )
     
-    return Response({"message": f"Temperaturas simuladas para {sensores.count()} sensores"})
+    return Response({"message": f"Temperaturas simuladas para {thermostatos.count()} sensores"})

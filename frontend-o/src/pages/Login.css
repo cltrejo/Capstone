@@ -155,6 +155,34 @@ main > div {
   animation: fadeIn 0.3s ease-in-out;
 }
 
+.register-link {
+  display: block;
+  color: #2D3748;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.register-link:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Placeholders elegantes */
+.form input::placeholder {
+  color: #a3a7c2; /* gris azulado elegante */
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+  opacity: 0.8;
+}
+
+/* Efecto sutil al enfocar el input */
+.form input:focus::placeholder {
+  color: #c8cae8; /* tono más claro al focus */
+  transform: translateX(4px);
+  opacity: 0.6;
+}
+
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-5px); }
   to { opacity: 1; transform: translateY(0); }

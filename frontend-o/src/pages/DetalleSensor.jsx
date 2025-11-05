@@ -10,7 +10,7 @@ export function DetalleSensor() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/sensores/${id}/mediciones/`, {
+    fetch(`http://localhost:8000/api/thermostatos/${id}/mediciones/`, {
       headers: {
         "Authorization": `Token ${localStorage.getItem("token")}`
       }
@@ -38,7 +38,7 @@ export function DetalleSensor() {
         <div className="content">
         <Header />
         <div className="detalle-wrapper">
-            <h2 className="sensor-nom">Histórico del Sensor {id}</h2>
+            <h2 className="sensor-nom">Histórico del Thermostato {id}</h2>
             <div className="chart-card">
             <ResponsiveContainer width="100%" height={400}>
                 <LineChart data={data}>

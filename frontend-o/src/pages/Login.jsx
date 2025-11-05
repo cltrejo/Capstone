@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import Header from '../components/Header'
 import './Login.css'
 import { isAuthenticated } from '../utils/auth'
@@ -57,6 +57,9 @@ export function Login (){
             <input type='text' name='username' value={credentials.username} onChange={handleChange}/>
             <label>Contraseña</label>
             <input type='password' name='password' value={credentials.password} onChange={handleChange}/>
+            <Link to="/register-user" className="register-link">
+              ¿No tienes cuenta? Regístrate
+            </Link>
             <button type='submit' className='submit-btn' disabled={loading}>
               {loading ? 'Entrando...' : 'Ingresar'}
             </button>
