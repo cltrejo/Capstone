@@ -1,24 +1,52 @@
 .container {
     display: flex;
-    justify-content: space-between; /* Distribuye el espacio entre los elementos */
-    align-items: center; /* Centra verticalmente */
-    padding: 15px 10px; /* Espaciado interno */
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
     background-color: white;
-    width: 100%; /* Asegura que ocupe todo el ancho */
+    width: 100%;
     box-sizing: border-box;
 }
 
-.container img {
-    height: 40px; /* Altura fija para la imagen */
-    width: auto; /* Mantiene la proporción */
-    max-width: 100%; /* Responsive */
+.logo {
+    height: 40px;
+    width: auto;
+    max-width: 100%;
     cursor: pointer;
+    flex-shrink: 0; /* Evita que se reduzca */
 }
 
+.center-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1; /* Ocupa el espacio disponible */
+}
+
+.right-content {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacio entre Dashboard y el botón */
+    flex-shrink: 0; /* Evita que se reduzca */
+}
 
 .msg {
     color: #081FF6;
     font-weight: bolder;
+    margin: 0;
+}
+
+.dashboard-link {
+    color: #081FF6;
+    font-weight: bolder;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.dashboard-link:hover {
+    color: #0615c0;
+    text-decoration: underline;
 }
 
 .btn-cerrar {
@@ -33,6 +61,7 @@
     transition: all 0.5s ease;
     position: relative;
     overflow: hidden;
+    white-space: nowrap; /* Evita que el texto se divida */
 }
 
 .btn-cerrar::before {

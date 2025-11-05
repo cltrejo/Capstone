@@ -94,6 +94,23 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
+#CONEXION EN EL SERVER
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'mssql',
+        'NAME': 'bluetek',
+        'HOST': 'localhost',
+        'OPTIONS': {
+            'driver': 'ODBC Driver 17 for SQL Server',
+            'trusted_connection': 'yes', 
+        },
+    }
+}
+
+# DISTINTAS CONEXIONES LOCALES
+
 '''
 DATABASES = {
     'default': {
@@ -108,7 +125,7 @@ DATABASES = {
         }
     }
 }
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
@@ -122,7 +139,7 @@ DATABASES = {
         }
     }
 }
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

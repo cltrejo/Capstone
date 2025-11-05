@@ -6,9 +6,7 @@ export function Header (){
     const navigate = useNavigate()
 
     const logout = () => {
-        // Tu lógica de cierre de sesión
         console.log('Cerrando sesión...')
-        // Ejemplo: limpiar localStorage y redirigirv
         localStorage.removeItem('token')
         localStorage.removeItem('username')
         navigate('/login')
@@ -23,21 +21,34 @@ export function Header (){
     return (
         <>
             <div className="container">
+                {/* Logo a la izquierda */}
                 <img 
-                src="https://bluetekglobal.com/wp-content/uploads/2024/06/logo-tagline@2x.png" 
-                onClick={goToHome} 
-                alt='Logo' 
+                    src="https://bluetekglobal.com/wp-content/uploads/2024/06/logo-tagline@2x.png" 
+                    onClick={goToHome} 
+                    alt='Logo' 
+                    className="logo"
                 /> 
-                               {/* Botón que solo aparece en /home */}
-                {(location.pathname === '/home' || location.pathname === '/dashboard') &&(
-                    <>
-                        <p className='msg'>Bienvendido {user.toUpperCase()}!</p>
-                        <a className='msg' onClick={()=>{navigate('/dashboard')}} style={{cursor: 'pointer'}}>Dashboard</a>
-                        <button className='btn-cerrar' onClick={logout}>
-                            Cerrar Sesión
-                        </button>
-                    </>
-                )}
+                
+                {/* Contenido centrado */}
+                <div className="center-content">
+                    {(location.pathname === '/home' || location.pathname === '/dashboard') && (
+                        <p className='msg'>Bienvenido {user?.toUpperCase()}!</p>
+                    )}
+                </div>
+
+                {/* Contenido a la derecha */}
+                <div className="right-content">
+                    {(location.pathname === '/home' || location.pathname === '/dashboard') &&(
+                        <>
+                            <a className='dashboard-link' onClick={() => navigate('/dashboard')}>
+                                Dashboard
+                            </a>
+                            <button className='btn-cerrar' onClick={logout}>
+                                Cerrar Sesión
+                            </button>
+                        </>
+                    )}
+                </div>
             </div>
         </>
     )

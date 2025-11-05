@@ -21,8 +21,8 @@ def registro(request):
     username = request.data.get('username')
     email = request.data.get('email')
     password = request.data.get('password')
-    first_name = request.data.get('first_name', '')
-    last_name = request.data.get('last_name', '')
+    nombre = request.data.get('first_name', '')
+    apellido = request.data.get('last_name', '')
     tipo_usuario = request.data.get('tipo_usuario', 'COMUN')  # Por defecto
 
     # Validaciones básicas
@@ -37,8 +37,8 @@ def registro(request):
         username=username,
         email=email,
         password=password,
-        first_name=first_name,
-        last_name=last_name,
+        nombre=nombre,
+        apellido=apellido,
         tipo_usuario=tipo_usuario
     )
 
