@@ -75,16 +75,7 @@ def VerifyTokenView(request):
         return Response({"valid": False}, status=status.HTTP_401_UNAUTHORIZED)
     
 
-'''
-
-ENDPOINTS HA DESARROLLAR
-
-# GET /api/habitaciones/ - Lista todas las habitaciones con sus sensores
-# GET /api/habitaciones/{id}/ - Detalle de habitación con mediciones recientes
-# GET /api/sensores/{id}/mediciones/ - Histórico de un sensor
-# POST /api/simular/mediciones/ - Endpoint para generar datos simulados
-
-'''
+# Endpoints a desarrollar (documentación)
 
 @api_view(['GET', 'POST'])
 @permission_classes((IsAuthenticated,))

@@ -1,0 +1,11 @@
+[run]
+source = backend/core,backend/backend
+branch = True
+omit =
+    */migrations/*
+    */tests.py
+
+[report]
+fail_under = 95
+show_missing = True
+skip_covered = False

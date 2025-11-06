@@ -27,7 +27,7 @@ Plataforma web interactiva para monitorear en tiempo real las condiciones térmi
 
 ## Descripción
 
-Bluetek Capstone centraliza información de sensores y termostatos por habitación y zona dentro de oficinas, y está orientada a soportar decisiones operacionales en climatización. Permite:
+Bluetek centraliza información de sensores y termostatos por habitación y zona dentro de oficinas, y está orientada a soportar decisiones operacionales en climatización. Permite:
 
 - Registro y autenticación de usuarios con roles (ADMIN y COMUN).
 - Gestión de entidades (habitaciones y termostatos) y sus mediciones.
@@ -79,8 +79,8 @@ Notas de implementación:
 1) Clonar repositorio y crear entorno virtual
 
 ```bash
-git clone https://github.com/<usuario>/<repo>.git
-cd Capstone
+git clone https://github.com/cltrejo/Bluetek.git
+cd Bluetek
 
 # Windows (PowerShell)
 python -m venv env
@@ -434,6 +434,30 @@ Sugerencias para pruebas:
 2) Crea un termostato vinculado (`POST /api/lista_thermostatos/`).
 3) Genera mediciones (`POST /api/simular_temperatura/`) o crea una medición manual (`POST /api/lista_mediciones/`).
 4) En el frontend, navega a `/sensor/<id_thermostato>` para ver el histórico y, si está habilitado, las curvas de predicción.
+
+---
+
+## Pruebas y cobertura
+
+- Backend
+  - Ejecuta: `py -m coverage run .\backend\manage.py test core` y `py -m coverage report`.
+  - Alcance: `backend/core` y `backend/backend` (umbral 95% definido en `.coveragerc`).
+  - Pruebas: `py .\backend\manage.py test core.test_core.TestCoreAPI`.
+  - Notas: en tests se usa SQLite; tablas de `core` se crean automáticamente.
+
+- Frontend
+  - Ejecuta: `cd frontend-o && npm install && npm run test:coverage`.
+  - Umbral: 95% para statements/branches/functions/lines (configurado en `vite.config.js`).
+  - Reporte: `frontend-o/coverage/index.html`.
+  - Notas: mocks de `fetch`/`isAuthenticated`; `ResizeObserver` está mockeado en `src/setupTests.js`.
+  - Protección de rutas con `PrivateRoute` (redirección a `/login` o render seguro).
+  - Flujo de login (errores con credenciales inválidas y guardado de token al autenticar).
+  - Render del detalle de sensor y carga de datos.
+
+Umbrales de cobertura frontend:
+- Exigido: `statements/branches/functions/lines = 95`.
+- Si alguna categoría queda por debajo, `npm run test:coverage` fallará.
+
 
 ---
 

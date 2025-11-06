@@ -2,3 +2,4 @@ django==5.0
 mssql-django==1.4
 djangorestframework
 django-cors-headers
+coverage
