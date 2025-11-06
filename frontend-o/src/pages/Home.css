@@ -14,52 +14,44 @@
 .main-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 40px 20px;
-    gap: 40px;
+    flex: 1;
+    position: relative;
 }
 
-/* Selector centrado arriba */
-.selector-top {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-/* Sección de la habitación */
-.habitacion-section {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+/* Selector arriba a la izquierda */
+.selector-top-left {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10;
 }
 
 /* Selector de habitaciones */
 .habitacion-selector {
     background-color: white;
-    padding: 20px 25px;
+    padding: 15px 20px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     display: flex;
     align-items: center;
-    gap: 15px;
-    min-width: 400px;
-    justify-content: center;
+    gap: 12px;
+    min-width: 350px;
 }
 
 .habitacion-selector label {
     font-weight: 600;
     color: #333;
-    font-size: 16px;
+    font-size: 14px;
     white-space: nowrap;
 }
 
 .habitacion-selector select {
-    width: 250px;
-    padding: 10px 12px;
+    width: 200px;
+    padding: 8px 12px;
     border-radius: 8px;
     border: 2px solid #e1e1e1;
     outline: none;
-    font-size: 15px;
+    font-size: 14px;
     background-color: #f8f9fa;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -75,92 +67,130 @@
     border-color: #c1c1c1;
 }
 
-/* Contenedor de la habitación seleccionada */
+/* Contenedor principal centrado - 95% del viewport */
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 95vw;
+    height: 95vh;
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Asegurar que el contenedor principal permita SVG grande */
 .habitacion-container {
     width: 100%;
-    max-width: 600px;
+    height: 100%;
+    max-width: none;
     background-color: #fff;
     border-radius: 16px;
-    padding: 30px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    padding: 40px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     text-align: center;
     border: 1px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    overflow: visible; /* Cambiado de auto a visible */
+}
+
+/* El SVG debe poder crecer */
+.habitacion-container .svg-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
 }
 
 .habitacion-container h2 {
-    margin-bottom: 15px;
-    font-size: 26px;
+    margin-bottom: 20px;
+    font-size: 32px;
     font-weight: 700;
     color: #2c3e50;
 }
 
 .habitacion-container p {
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     color: #555;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 500;
 }
 
 /* Mensaje cuando no hay habitación seleccionada */
 .no-habitacion {
+    width: 100%;
+    height: 100%;
     background-color: #fff;
     border-radius: 16px;
     padding: 40px;
     text-align: center;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     color: #666;
-    font-size: 18px;
+    font-size: 22px;
     font-weight: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #e1e1e1;
 }
 
 .detalle-btn {
-  background: linear-gradient(135deg, #4a90e2, #081FF6);
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  margin-top: 20px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    background: linear-gradient(135deg, #4a90e2, #081FF6);
+    color: white;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 30px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
 .detalle-btn:hover {
-  background: linear-gradient(135deg, #5aa0f2, #468cd0);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.2);
+    background: linear-gradient(135deg, #5aa0f2, #468cd0);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3);
 }
 
 .detalle-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    transform: translateY(0);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
 }
 
 .alerta-temp {
-  color: #d62828;
-  font-weight: bold;
-  margin: 8px 0;
-  padding: 6px 10px;
-  border-radius: 5px;
-  background: #ffe6e6;
-  border: 1px solid #d62828;
-  display: inline-block;
-  animation: pulse 1.5s infinite;
+    color: #d62828;
+    font-weight: bold;
+    margin: 15px 0;
+    padding: 10px 15px;
+    border-radius: 8px;
+    background: #ffe6e6;
+    border: 1px solid #d62828;
+    display: inline-block;
+    animation: pulse 1.5s infinite;
+    font-size: 18px;
 }
 
 @keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.05); opacity: 0.8; }
-  100% { transform: scale(1); opacity: 1; }
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
 /* Responsivo */
 @media (max-width: 768px) {
-    .main-container {
-        padding: 20px 15px;
-        gap: 30px;
+    .selector-top-left {
+        position: relative;
+        top: auto;
+        left: auto;
+        margin: 15px;
+        display: flex;
+        justify-content: center;
     }
 
     .habitacion-selector {
@@ -172,6 +202,47 @@
 
     .habitacion-selector select {
         width: 100%;
+    }
+
+    .main-content {
+        width: 100vw;
+        height: auto;
+        min-height: 80vh;
+        padding: 15px;
+    }
+
+    .habitacion-container {
+        padding: 25px;
+        height: auto;
+        min-height: 400px;
+    }
+
+    .habitacion-container h2 {
+        font-size: 24px;
+    }
+
+    .habitacion-container p {
+        font-size: 16px;
+    }
+
+    .no-habitacion {
+        font-size: 18px;
+        padding: 30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .selector-top-left {
+        margin: 10px;
+    }
+
+    .habitacion-selector {
+        min-width: 280px;
+        padding: 12px 15px;
+    }
+
+    .main-content {
+        padding: 10px;
     }
 
     .habitacion-container {

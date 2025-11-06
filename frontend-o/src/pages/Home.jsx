@@ -33,19 +33,17 @@ export function Home() {
             if (!res.ok) throw new Error("No se pudo obtener el sensor");
 
             const sensores = await res.json();
-            console.log("Respuesta completa de sensores:", sensores); // ← DEBUG
+            console.log("Respuesta completa de sensores:", sensores);
             
             if (sensores.length === 0) {
                 alert("No hay sensores en esta habitación");
                 return;
             }
 
-            // Verifica qué campos tiene el primer sensor
-            console.log("Primer sensor:", sensores[0]); // ← DEBUG
+            console.log("Primer sensor:", sensores[0]);
             
-            // Prueba con diferentes campos posibles
             const sensorId = sensores[0].id_thermostato || sensores[0].id || sensores[0].id_sensor;
-            console.log("Sensor ID encontrado:", sensorId); // ← DEBUG
+            console.log("Sensor ID encontrado:", sensorId);
             
             if (!sensorId) {
                 alert("No se pudo identificar el sensor");
@@ -66,8 +64,8 @@ export function Home() {
             </header>
 
             <main className="main-container">
-                {/* Selector de habitación */}
-                <div className="selector-top">
+                {/* Selector arriba a la izquierda */}
+                <div className="selector-top-left">
                     <div className="habitacion-selector">
                         <label>Seleccionar Habitación: </label>
                         <select 
@@ -84,8 +82,8 @@ export function Home() {
                     </div>
                 </div>
 
-                {/* Contenedor de la habitación seleccionada */}
-                <div className="habitacion-section">
+                {/* Contenedor principal centrado - 95% del viewport */}
+                <div className="main-content">
                     {habitacionSeleccionada ? (
                         <div className="habitacion-container">
                             <h2 className="titulo-hab">{habitacionSeleccionada.nombre}</h2>
