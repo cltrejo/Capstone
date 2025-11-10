@@ -36,20 +36,19 @@ export function Room({ svgContent, temperatura }) {
         }
         
         const color = temperaturaAColor(temperatura);
-        console.log(`🎨 Procesando SVG - Temp: ${temperatura}°C, Color: ${color}`);
         
-        const procesado = svgContent
-            .replace(/height="auto"/g, 'height="300"')
-            .replace(/fill=\{fillColor\}/g, `fill="${color}"`)
-            .replace(/fill=\"#[0-9A-Fa-f]{3,6}\"/g, `fill="${color}"`)
-            .replace(/fill=\"#99CA88\"/g, `fill="${color}"`)
+        // LIMPIAR el SVG de la base de datos
+        const svgLimpio = svgContent
+            .replace(/\\n/g, '')  // Eliminar \n
+            .replace(/\\r/g, '')  // Eliminar \r  
+            .replace(/\\"/g, '"') // Convertir \" a "
+            .replace(/\{fillColor\}/g, color) // Reemplazar {fillColor} con el color real
             .replace(/style=\{\{.*?\}\}/g, `style="transition: fill 0.8s ease-in-out"`)
             .replace(/strokeWidth=/g, 'stroke-width=')
-            .replace(/strokeOpacity=/g, 'stroke-opacity=')
-            .replace(/<path/g, `<path style="transition: fill 0.8s ease-in-out"`);
+            .replace(/strokeOpacity=/g, 'stroke-opacity=');
         
-        setSvgProcesado(procesado);
-    }, [temperatura, svgContent]); // Solo se ejecuta cuando cambian estas props
+        setSvgProcesado(svgLimpio);
+    }, [temperatura, svgContent]);
     
     if (!svgProcesado) {
         return <div>Cargando...</div>;

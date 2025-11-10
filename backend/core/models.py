@@ -138,10 +138,12 @@ class TIPO_ZONA(models.Model):
 
 class ZONA(models.Model):
     id_zona = models.AutoField(primary_key=True)
+    nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
     orientacion = models.CharField(max_length=100)
     superficie_m3 = models.IntegerField()
     cantidad_equipos = models.IntegerField()
+    forma_svg = models.TextField()
     id_oficina = models.ForeignKey(
         OFICINA,
         on_delete=models.CASCADE,
@@ -201,7 +203,7 @@ class MEDICION_SENSOR(models.Model):
         db_table = 'MEDICION_SENSOR'
 
 #######TABLA USADA EN SIMULACION WEB
-
+'''
 class HABITACION(models.Model):
     id_habitacion = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
@@ -213,35 +215,25 @@ class HABITACION(models.Model):
     
     class Meta:
         db_table = 'HABITACION'
-
+'''
 #########################################
 
 class THERMOSTATO(models.Model):
     id_thermostato = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=100)
-    '''
-    ESTA ES LA FOREIGN KEY CORRECTA
-    PERO PARA SIMULAR HACEMOS FOREIGN CON
-    TABLA HABITACION -> CAMBIAR CUANDO NO SE ESTE SIMULANDO
     id_zona = models.ForeignKey(
         ZONA,
         on_delete=models.CASCADE,
         db_column='id_zona'
-    )'''
-
-    id_habitacion = models.ForeignKey(
-        HABITACION,
-        on_delete=models.CASCADE,
-        db_column='id_habitacion'
     )
-
+    
     class Meta:
         db_table = 'THERMOSTATO'
 
 
 class MEDICION_THERMOSTATO(models.Model):
     id_medicionthermostato = models.AutoField(primary_key=True)
-    valor = models.IntegerField()
+    valor = models.FloatField()
     unidad = models.CharField(max_length=100)
     timestamp = models.DateTimeField()
     id_thermostato = models.ForeignKey(

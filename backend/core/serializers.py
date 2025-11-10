@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate, get_user_model
-from .models import HABITACION, MEDICION_THERMOSTATO, THERMOSTATO
+from .models import ZONA, MEDICION_THERMOSTATO, THERMOSTATO
 
 User = get_user_model()
 
@@ -43,18 +43,18 @@ class ThermostatoSerializer(serializers.ModelSerializer):
             return MedicionSerializer(ultima).data
         return None
     
-class HabitacionSerializer(serializers.ModelSerializer):
+class ZonaSerializer(serializers.ModelSerializer):
     termostatos = ThermostatoSerializer(many=True, read_only=True)
     temperatura_actual = serializers.SerializerMethodField()
 
     class Meta:
-        model = HABITACION
+        model = ZONA
         fields = '__all__'
 
     def get_temperatura_actual(self, obj):
         # Obtener el sensor de temperatura de esta habitación
         termostato_temperatura = THERMOSTATO.objects.filter(
-            id_habitacion=obj,  # ← CORREGIDO
+            id_zona=obj,  # ← CORREGIDO
         ).first()
         
         if termostato_temperatura:

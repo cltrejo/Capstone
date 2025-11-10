@@ -36,19 +36,6 @@
     margin: 0;
 }
 
-.dashboard-link {
-    color: #081FF6;
-    font-weight: bolder;
-    text-decoration: none;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.dashboard-link:hover {
-    color: #0615c0;
-    text-decoration: underline;
-}
-
 .btn-cerrar {
     background: transparent;
     color: #dc3545;

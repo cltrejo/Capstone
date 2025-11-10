@@ -4,8 +4,7 @@ import { RegisterMaintainer } from './pages/RegisterMaintainer'
 import { RegisterUser } from './pages/RegisterUser'
 import { Home } from './pages/Home'
 import { NotFound } from './pages/NotFound'
-import { DetalleSensor } from './pages/DetalleSensor'
-import { Dashboard } from './pages/Dashboard'
+import DetalleSensor from './pages/DetalleSensor'
 import PrivateRoute from './utils/PrivateRoute'
 import './App.css'
 
@@ -32,19 +31,10 @@ function App() {
           }
         />
 
-        {/* Dashboard protegido */}
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
 
         {/* Detalle sensor protegido */}
         <Route
-          path="/sensor/:id"
+          path="/dashboard/:id"
           element={
             <PrivateRoute>
               <DetalleSensor />

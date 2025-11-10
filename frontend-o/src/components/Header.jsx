@@ -40,9 +40,6 @@ export function Header (){
                 <div className="right-content">
                     {(location.pathname === '/home' || location.pathname === '/dashboard') &&(
                         <>
-                            <a className='dashboard-link' onClick={() => navigate('/dashboard')}>
-                                Dashboard
-                            </a>
                             <button className='btn-cerrar' onClick={logout}>
                                 Cerrar Sesión
                             </button>

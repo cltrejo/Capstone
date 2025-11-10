@@ -1,38 +1,50 @@
-.detalle-wrapper {
+.dashboard-content {
+  color: #000 !important;
+}
+
+.dashboard-wrapper {
+  width: 95%;
+  margin: 0 auto;
   padding: 20px;
-  flex: 1;
+}
+
+.filters {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
 }
 
-.chart-card {
-  background: #fff; /* Fondo blanco */
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  width: 100%;
-  max-width: 1200px
+.filter-btn {
+  padding: 8px 16px;
+  border: none;
+  background: #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s;
 }
 
-.sensor-nom {
-  font-size: 28px;
-  font-weight: 700;
-  color: #081FF6;
-  text-align: center;
+.filter-btn.active {
+  background: #007bff;
+  color: white;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
   margin: 20px 0;
-  position: relative;
-  letter-spacing: 1px;
 }
 
-/* Línea decorativa debajo */
-.sensor-nom::after {
-  content: "";
-  display: block;
-  width: 60px;
-  height: 3px;
-  background: #081FF6;
-  margin: 8px auto 0;
-  border-radius: 2px;
+.stat-card {
+  text-align: center;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  padding: 10px;
 }
 
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #007bff;
+}

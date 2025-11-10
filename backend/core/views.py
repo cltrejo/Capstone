@@ -8,9 +8,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
-from .serializers import HabitacionSerializer, MedicionSerializer, ThermostatoSerializer, UserSerializer, LoginSerializer
+from .serializers import ZonaSerializer, MedicionSerializer, ThermostatoSerializer, UserSerializer, LoginSerializer
 from rest_framework.permissions import IsAuthenticated
-from .models import HABITACION, MEDICION_THERMOSTATO, THERMOSTATO
+from .models import ZONA, MEDICION_THERMOSTATO, THERMOSTATO
 
 User = get_user_model()
 
@@ -79,13 +79,13 @@ def VerifyTokenView(request):
 
 @api_view(['GET', 'POST'])
 @permission_classes((IsAuthenticated,))
-def lista_habitaciones(request):
+def lista_zonas(request):
     if request.method == 'GET':
-        query = HABITACION.objects.all()
-        serializer = HabitacionSerializer(query, many = True)
+        query = ZONA.objects.all()
+        serializer = ZonaSerializer(query, many = True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     elif request.method == 'POST':
-        serializer = HabitacionSerializer(data = request.data)
+        serializer = ZonaSerializer(data = request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -95,23 +95,23 @@ def lista_habitaciones(request):
 
 @api_view(['GET', 'PATCH', 'DELETE'])
 @permission_classes((IsAuthenticated,))
-def detalle_habitacion(request, id):
+def detalle_zona(request, id):
     try:
-        habitacion = HABITACION.objects.get(id_habitacion = id)
-    except HABITACION.DoesNotExist:
+        zona = ZONA.objects.get(id_zona = id)
+    except ZONA.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == 'GET':
-        serializer = HabitacionSerializer(habitacion)
+        serializer = ZonaSerializer(zona)
         return Response(serializer.data)
     elif request.method == 'PATCH':
-        serializer = HabitacionSerializer(habitacion, data = request.data, partial = True)
+        serializer = ZonaSerializer(zona, data = request.data, partial = True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'DELETE':
-        habitacion.delete()
+        zona.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
         
         
@@ -148,21 +148,21 @@ def historico_thermostato( request, id):
     
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
-def sensores_por_habitacion(request, id_habitacion):
+def sensores_por_zona(request, id_zona):
     try:
-        thermostatos = THERMOSTATO.objects.filter(id_habitacion=id_habitacion)
+        thermostatos = THERMOSTATO.objects.filter(id_zona=id_zona)
         if not thermostatos.exists():
             return Response(
-                {"error": "No hay sensores asociados a esta habitación"},
+                {"error": "No hay sensores asociados a esta zona"},
                 status=status.HTTP_404_NOT_FOUND
             )
 
         serializer = ThermostatoSerializer(thermostatos, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    except HABITACION.DoesNotExist:
+    except ZONA.DoesNotExist:
         return Response(
-            {"error": "Habitación no encontrada"},
+            {"error": "Zona no encontrada"},
             status=status.HTTP_404_NOT_FOUND
         )
 
@@ -243,12 +243,18 @@ def simular_temperatura(request):
             nueva_temperatura = max(18.0, min(30.0, nueva_temperatura))  # Limitar entre 18-30
         else:
             nueva_temperatura = random.uniform(20.0, 25.0)  # Temperatura inicial
+
+        nueva_temperatura = round(nueva_temperatura, 2)
+
+        # 🔹 Fecha actual sin microsegundos ni tzinfo
+        timestamp = timezone.now().replace(microsecond=0, tzinfo=None)  
+        print(timestamp)   
         
         MEDICION_THERMOSTATO.objects.create(
             id_thermostato=thermostato,
             valor=nueva_temperatura,
             unidad='°C',
-            timestamp=timezone.now()
+            timestamp=timestamp
         )
     
     return Response({"message": f"Temperaturas simuladas para {thermostatos.count()} sensores"})

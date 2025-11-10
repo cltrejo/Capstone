@@ -1,30 +1,30 @@
 import { useState, useEffect } from "react";
 
 export function useSensor() {
-    const [habitaciones, setHabitaciones] = useState([]);
-    const [idHabitacionSeleccionada, setIdHabitacionSeleccionada] = useState(null);
+    const [zonas, setZonas] = useState([]);
+    const [idZonaSeleccionada, setIdZonaSeleccionada] = useState(null);
     const [cargando, setCargando] = useState(true);
 
     // Derivar la habitación seleccionada directamente desde habitaciones
-    const habitacionSeleccionada = habitaciones.find(
-        h => h.id_habitacion === idHabitacionSeleccionada
+    const zonaSeleccionada = zonas.find(
+        h => h.id_zona  === idZonaSeleccionada
     );
 
     useEffect(() => {
-        obtenerHabitaciones();
+        obtenerZonas();
 
         const intervaloSimulacion = setInterval(() => {
             simularCambiosTemperatura();
-        }, 15000);
+        }, 30000);
 
         return () => clearInterval(intervaloSimulacion);
     }, []);
 
-    const obtenerHabitaciones = async () => {
+    const obtenerZonas = async () => {
         try {
             setCargando(true);
             const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:8000/api/lista_habitaciones/", {
+            const response = await fetch("http://localhost:8000/api/lista_zonas/", {
                 headers: {
                     "Authorization": `Token ${token}`,
                     "Content-Type": "application/json"
@@ -33,17 +33,17 @@ export function useSensor() {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log("📊 Habitaciones recibidas:", data);
-                setHabitaciones(data);
+                console.log("📊 Zonas recibidas:", data);
+                setZonas(data);
 
                 // Seleccionar la primera si no hay ninguna
-                if (data.length > 0 && !idHabitacionSeleccionada) {
-                    setIdHabitacionSeleccionada(data[0].id_habitacion);
-                    console.log("🏠 Habitación inicial seleccionada:", data[0].nombre);
+                if (data.length > 0 && !idZonaSeleccionada) {
+                    setIdZonaSeleccionada(data[0].id_zona);
+                    console.log("🏠 Zona inicial seleccionada:", data[0].nombre);
                 }
             }
         } catch (error) {
-            console.error("Error obteniendo habitaciones:", error);
+            console.error("Error obteniendo zonas:", error);
         } finally {
             setCargando(false);
         }
@@ -62,7 +62,7 @@ export function useSensor() {
                 }
             });
 
-            const response = await fetch("http://localhost:8000/api/lista_habitaciones/", {
+            const response = await fetch("http://localhost:8000/api/lista_zonas/", {
                 headers: {
                     "Authorization": `Token ${token}`,
                     "Content-Type": "application/json"
@@ -71,7 +71,7 @@ export function useSensor() {
 
             if (response.ok) {
                 const data = await response.json();
-                setHabitaciones(data);
+                setZonas(data);
             }
         } catch (error) {
             console.error("Error simulando temperatura:", error);
@@ -79,12 +79,12 @@ export function useSensor() {
     };
 
     return {
-        habitaciones,
-        habitacionSeleccionada,
-        idHabitacionSeleccionada,
-        setIdHabitacionSeleccionada,
+        zonas,
+        zonaSeleccionada,
+        idZonaSeleccionada,
+        setIdZonaSeleccionada,
         cargando,
-        obtenerHabitaciones,
+        obtenerZonas,
         simularCambiosTemperatura
     };
 }

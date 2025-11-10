@@ -97,15 +97,6 @@
     overflow: visible; /* Cambiado de auto a visible */
 }
 
-/* El SVG debe poder crecer */
-.habitacion-container .svg-container {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
-
 .habitacion-container h2 {
     margin-bottom: 20px;
     font-size: 32px;

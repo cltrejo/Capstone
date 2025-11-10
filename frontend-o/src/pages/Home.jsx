@@ -6,24 +6,24 @@ import './Home.css';
 
 export function Home() {
     const { 
-        habitaciones, 
-        habitacionSeleccionada, 
-        idHabitacionSeleccionada, 
-        setIdHabitacionSeleccionada 
+        zonas, 
+        zonaSeleccionada, 
+        idZonaSeleccionada, 
+        setIdZonaSeleccionada 
     } = useSensor();
 
     const navigate = useNavigate();
 
     const handleDetalleClick = async () => {
-        if (!habitacionSeleccionada) {
-            alert("Selecciona primero una habitación.");
+        if (!zonaSeleccionada) {
+            alert("Selecciona primero una zona.");
             return;
         }
 
         const token = localStorage.getItem("token");
 
         try {
-            const res = await fetch(`http://localhost:8000/api/habitaciones/${habitacionSeleccionada.id_habitacion}/sensores/`, {
+            const res = await fetch(`http://localhost:8000/api/habitaciones/${zonaSeleccionada.id_zona}/sensores/`, {
                 headers: {
                     "Authorization": `Token ${token}`,
                     "Content-Type": "application/json"
@@ -36,7 +36,7 @@ export function Home() {
             console.log("Respuesta completa de sensores:", sensores);
             
             if (sensores.length === 0) {
-                alert("No hay sensores en esta habitación");
+                alert("No hay sensores en esta zona");
                 return;
             }
 
@@ -50,7 +50,7 @@ export function Home() {
                 return;
             }
 
-            navigate(`/sensor/${sensorId}`);
+            navigate(`/dashboard/${sensorId}`);
         } catch (err) {
             console.error(err);
             alert("Error al buscar el sensor");
@@ -67,14 +67,14 @@ export function Home() {
                 {/* Selector arriba a la izquierda */}
                 <div className="selector-top-left">
                     <div className="habitacion-selector">
-                        <label>Seleccionar Habitación: </label>
+                        <label>Seleccionar Zona: </label>
                         <select 
-                            value={idHabitacionSeleccionada || ''}
-                            onChange={(e) => setIdHabitacionSeleccionada(parseInt(e.target.value))}
+                            value={idZonaSeleccionada || ''}
+                            onChange={(e) => setIdZonaSeleccionada(parseInt(e.target.value))}
                         >
-                            <option value="">Selecciona una habitación</option>
-                            {habitaciones.map(hab => (
-                                <option key={hab.id_habitacion} value={hab.id_habitacion}>
+                            <option value="">Selecciona una zona</option>
+                            {zonas.map(hab => (
+                                <option key={hab.id_zona} value={hab.id_zona}>
                                     {hab.nombre} ({hab.temperatura_actual ? `${hab.temperatura_actual}°C` : 'Sin datos'})
                                 </option>
                             ))}
@@ -84,32 +84,32 @@ export function Home() {
 
                 {/* Contenedor principal centrado - 95% del viewport */}
                 <div className="main-content">
-                    {habitacionSeleccionada ? (
+                    {zonaSeleccionada ? (
                         <div className="habitacion-container">
-                            <h2 className="titulo-hab">{habitacionSeleccionada.nombre}</h2>
+                            <h2 className="titulo-hab">{zonaSeleccionada.nombre}</h2>
                             <p>
                                 Temperatura actual:{" "}
-                                {habitacionSeleccionada.temperatura_actual 
-                                    ? `${habitacionSeleccionada.temperatura_actual}°C` 
+                                {zonaSeleccionada.temperatura_actual 
+                                    ? `${zonaSeleccionada.temperatura_actual}°C` 
                                     : 'No disponible'}
                             </p>
 
-                            {habitacionSeleccionada.temperatura_actual >= 27 && (
+                            {zonaSeleccionada.temperatura_actual >= 27 && (
                                 <p className="alerta-temp">🔥 Temperatura alta detectada</p>
                             )}
 
                             <Room 
-                                svgContent={habitacionSeleccionada.forma_svg}
-                                temperatura={habitacionSeleccionada.temperatura_actual}
+                                svgContent={zonaSeleccionada.forma_svg}
+                                temperatura={zonaSeleccionada.temperatura_actual}
                             />
 
                             <button className="detalle-btn" onClick={handleDetalleClick}>
-                                Ver detalle del sensor
+                                Ver Dashboard
                             </button>
                         </div>
                     ) : (
                         <div className="no-habitacion">
-                            <p>Selecciona una habitación para ver los detalles</p>
+                            <p>Selecciona una zona para ver los detalles</p>
                         </div>
                     )}
                 </div>
