@@ -190,7 +190,7 @@ class SENSOR(models.Model):
 
 class MEDICION_SENSOR(models.Model):
     id_medicionsensor = models.AutoField(primary_key=True)
-    valor = models.IntegerField()
+    valor = models.FloatField()
     unidad = models.CharField(max_length=100)
     timestamp = models.DateTimeField()
     id_sensor = models.ForeignKey(

@@ -10,7 +10,7 @@ from rest_framework.authtoken.models import Token
 from django.contrib.auth import get_user_model
 from .serializers import ZonaSerializer, MedicionSerializer, ThermostatoSerializer, UserSerializer, LoginSerializer
 from rest_framework.permissions import IsAuthenticated
-from .models import ZONA, MEDICION_THERMOSTATO, THERMOSTATO
+from .models import ZONA, MEDICION_THERMOSTATO, THERMOSTATO, SENSOR, MEDICION_SENSOR, MATERIAL_ZONA
 
 User = get_user_model()
 
@@ -256,5 +256,106 @@ def simular_temperatura(request):
             unidad='°C',
             timestamp=timestamp
         )
+
+        zona_thermostato = thermostato.id_zona
+        sensores_activos = SENSOR.objects.filter(id_zona=zona_thermostato, activo=True)
+        
+        for sensor in sensores_activos:
+            # Calcular consumo de energía basado en la temperatura
+            if nueva_temperatura <= 21.0:
+                # Temperatura baja - consumo mínimo o cero
+                consumo_energia = 0.0
+            elif nueva_temperatura <= 24.0:
+                # Temperatura moderada - consumo bajo
+                consumo_energia = random.uniform(0.1, 0.5)
+            else:
+                # Temperatura alta - consumo alto (enfriamiento activo)
+                consumo_energia = random.uniform(0.6, 1.2)
+            
+            consumo_energia = round(consumo_energia, 2)
+            
+            # Crear medición del sensor de energía
+            MEDICION_SENSOR.objects.create(
+                id_sensor=sensor,
+                valor=consumo_energia,
+                unidad='kWh',  # o la unidad que uses para energía
+                timestamp=timestamp
+            )
     
     return Response({"message": f"Temperaturas simuladas para {thermostatos.count()} sensores"})
+
+@api_view(['GET'])
+@permission_classes((IsAuthenticated,))
+def dashboard_zona(request, id_zona):
+    try:
+        # 1. Obtener información básica de la zona
+        zona = ZONA.objects.select_related('id_tipozona').get(id_zona=id_zona)
+        
+        # 2. Obtener materiales de la zona
+        materiales = MATERIAL_ZONA.objects.filter(id_zona=id_zona).values('nombre', 'cantidad_m2')
+        
+        # 3. Obtener thermostatos de la zona y sus últimas mediciones
+        thermostatos = THERMOSTATO.objects.filter(id_zona=id_zona)
+        mediciones_thermostatos = MEDICION_THERMOSTATO.objects.filter(
+            id_thermostato__in=thermostatos
+        ).order_by('-timestamp')
+        
+        # 4. Obtener sensores activos de la zona y sus últimas mediciones
+        sensores = SENSOR.objects.filter(id_zona=id_zona, activo=True)
+        mediciones_sensores = MEDICION_SENSOR.objects.filter(
+            id_sensor__in=sensores
+        ).order_by('-timestamp')
+        
+        # 5. Temperatura actual (última medición del thermostato)
+        temperatura_actual = None
+        ultima_medicion = mediciones_thermostatos.first()
+        if ultima_medicion:
+            temperatura_actual = ultima_medicion.valor
+        
+        # 6. Construir respuesta consolidada
+        response_data = {
+            'zona': {
+                'id_zona': zona.id_zona,
+                'nombre': zona.nombre,
+                'descripcion': zona.descripcion,
+                'orientacion': zona.orientacion,
+                'superficie_m3': zona.superficie_m3,
+                'cantidad_equipos': zona.cantidad_equipos,
+                'forma_svg': zona.forma_svg,
+                'temperatura_actual': temperatura_actual,
+                'tipo_zona': zona.id_tipozona.nombre if zona.id_tipozona else None
+            },
+            'materiales': list(materiales),
+            'thermostatos': [
+                {
+                    'id_thermostato': t.id_thermostato,
+                    'nombre': t.nombre,
+                    'mediciones': [
+                        {
+                            'valor': m.valor,
+                            'unidad': m.unidad,
+                            'timestamp': m.timestamp
+                        } for m in mediciones_thermostatos if m.id_thermostato == t
+                    ]
+                } for t in thermostatos
+            ],
+            'sensores': [
+                {
+                    'id_sensor': s.id_sensor,
+                    'tipo': s.tipo,
+                    'nombre': s.nombre,
+                    'mediciones': [
+                        {
+                            'valor': m.valor,
+                            'unidad': m.unidad,
+                            'timestamp': m.timestamp
+                        } for m in mediciones_sensores if m.id_sensor == s
+                    ]
+                } for s in sensores
+            ]
+        }
+        
+        return Response(response_data)
+        
+    except ZONA.DoesNotExist:
+        return Response({"error": "Zona no encontrada"}, status=404)
