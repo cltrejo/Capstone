@@ -35,6 +35,7 @@ export function Dashboard() {
     }
 
     fetchDashboardData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]); // Solo dependemos del id
 
   // Efecto separado para procesar datos cuando cambia el filtro
