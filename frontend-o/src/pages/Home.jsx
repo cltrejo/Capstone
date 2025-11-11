@@ -3,6 +3,7 @@ import { Room } from '../components/Icons';
 import { useSensor } from '../hooks/useSensor';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
+import endpoints from '../api';
 
 export function Home() {
     const { 
@@ -20,41 +21,31 @@ export function Home() {
             return;
         }
 
-        const token = localStorage.getItem("token");
+    try {
+        const { data } = await endpoints.zonas.sensores(idZonaSeleccionada);
 
-        try {
-            const res = await fetch(`http://localhost:8000/api/habitaciones/${zonaSeleccionada.id_zona}/sensores/`, {
-                headers: {
-                    "Authorization": `Token ${token}`,
-                    "Content-Type": "application/json"
-                }
-            });
+        console.log("Respuesta completa de sensores:", data);
 
-            if (!res.ok) throw new Error("No se pudo obtener el sensor");
-
-            const sensores = await res.json();
-            console.log("Respuesta completa de sensores:", sensores);
-            
-            if (sensores.length === 0) {
-                alert("No hay sensores en esta zona");
-                return;
-            }
-
-            console.log("Primer sensor:", sensores[0]);
-            
-            const sensorId = sensores[0].id_thermostato || sensores[0].id || sensores[0].id_sensor;
-            console.log("Sensor ID encontrado:", sensorId);
-            
-            if (!sensorId) {
-                alert("No se pudo identificar el sensor");
-                return;
-            }
-
-            navigate(`/dashboard/${sensorId}`);
-        } catch (err) {
-            console.error(err);
-            alert("Error al buscar el sensor");
+        if (!data || data.length === 0) {
+            alert("No hay sensores en esta zona");
+            return;
         }
+
+        console.log("Primer sensor:", data[0]);
+
+        const sensorId = data[0].id_thermostato || data[0].id || data[0].id_sensor;
+        console.log("Sensor ID encontrado:", sensorId);
+
+        if (!sensorId) {
+            alert("No se pudo identificar el sensor");
+            return;
+        }
+
+        navigate(`/dashboard/${sensorId}`);
+    } catch (err) {
+        console.error(err);
+        alert("Error al buscar el sensor");
+    }
     };
 
     return (

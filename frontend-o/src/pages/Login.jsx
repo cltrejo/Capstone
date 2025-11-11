@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import Header from '../components/Header'
 import './Login.css'
 import { isAuthenticated } from '../utils/auth'
+import endpoints from '../api'
 
 export function Login (){
   const [credentials, setCredentials] = useState({ username: "", password: "" })
@@ -29,23 +30,21 @@ export function Login (){
     setLoading(true)
     setError("")   // reset
 
-    const response = await fetch("http://localhost:8000/api/login/",{
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(credentials)
-    })
+    try {
+      // 🔥 Usas el endpoint definido en /api/index.js
+      const { data } = await endpoints.auth.login(credentials);
 
-    const data = await response.json()
-    setLoading(false)
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("username", data.user.username);
 
-    if (response.ok) {
-      localStorage.setItem("token", data.token)
-      localStorage.setItem("username", data.user.username)
-      navigate('/home', { replace: true })
-    } else {
-      setError("⚠️ Credenciales incorrectas. Inténtalo nuevamente.")  // 👈 mensaje bonito
+      navigate("/home", { replace: true });
+    } catch (err) {
+      console.error(err);
+      setError("⚠️ Credenciales incorrectas. Inténtalo nuevamente.");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className='content-login'>

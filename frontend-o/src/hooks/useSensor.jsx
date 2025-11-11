@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import endpoints from "../api";
 
 export function useSensor() {
     const [zonas, setZonas] = useState([]);
@@ -23,56 +24,34 @@ export function useSensor() {
     const obtenerZonas = async () => {
         try {
             setCargando(true);
-            const token = localStorage.getItem("token");
-            const response = await fetch("http://localhost:8000/api/lista_zonas/", {
-                headers: {
-                    "Authorization": `Token ${token}`,
-                    "Content-Type": "application/json"
-                }
-            });
+            const { data } = await endpoints.zonas.listar();
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log("📊 Zonas recibidas:", data);
-                setZonas(data);
+            console.log("Zonas recibidas:", data);
+            setZonas(data);
 
-                // Seleccionar la primera si no hay ninguna
-                if (data.length > 0 && !idZonaSeleccionada) {
-                    setIdZonaSeleccionada(data[0].id_zona);
-                    console.log("🏠 Zona inicial seleccionada:", data[0].nombre);
-                }
+            if (data.length > 0 && !idZonaSeleccionada) {
+                setIdZonaSeleccionada(data[0].id_zona);
+                console.log("Zona inicial seleccionada:", data[0].nombre);
             }
         } catch (error) {
-            console.error("Error obteniendo zonas:", error);
+            console.log("Error obteniendo zonas:", error)
+            if (error.response?.status === 401){
+                console.warn("Token invalido")
+            }
         } finally {
-            setCargando(false);
+            setCargando(false)
         }
     };
 
     const simularCambiosTemperatura = async () => {
         try {
-            const token = localStorage.getItem("token");
             console.log("🔄 Simulando cambios de temperatura...");
 
-            await fetch("http://localhost:8000/api/simular_temperatura/", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Token ${token}`,
-                    "Content-Type": "application/json"
-                }
-            });
+            await endpoints.simulacion.temperatura();
 
-            const response = await fetch("http://localhost:8000/api/lista_zonas/", {
-                headers: {
-                    "Authorization": `Token ${token}`,
-                    "Content-Type": "application/json"
-                }
-            });
+            const { data } = await endpoints.zonas.listar();
+            setZonas(data);
 
-            if (response.ok) {
-                const data = await response.json();
-                setZonas(data);
-            }
         } catch (error) {
             console.error("Error simulando temperatura:", error);
         }

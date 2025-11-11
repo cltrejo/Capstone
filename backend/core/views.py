@@ -248,7 +248,6 @@ def simular_temperatura(request):
 
         # 🔹 Fecha actual sin microsegundos ni tzinfo
         timestamp = timezone.now().replace(microsecond=0, tzinfo=None)  
-        print(timestamp)   
         
         MEDICION_THERMOSTATO.objects.create(
             id_thermostato=thermostato,
@@ -298,13 +297,13 @@ def dashboard_zona(request, id_zona):
         thermostatos = THERMOSTATO.objects.filter(id_zona=id_zona)
         mediciones_thermostatos = MEDICION_THERMOSTATO.objects.filter(
             id_thermostato__in=thermostatos
-        ).order_by('-timestamp')
+        ).order_by('timestamp')
         
         # 4. Obtener sensores activos de la zona y sus últimas mediciones
         sensores = SENSOR.objects.filter(id_zona=id_zona, activo=True)
         mediciones_sensores = MEDICION_SENSOR.objects.filter(
             id_sensor__in=sensores
-        ).order_by('-timestamp')
+        ).order_by('timestamp')
         
         # 5. Temperatura actual (última medición del thermostato)
         temperatura_actual = None

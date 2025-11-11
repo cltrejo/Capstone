@@ -1,22 +1,24 @@
+import endpoints from "../api";
+
 export const isAuthenticated = async () => {
   const token = localStorage.getItem("token");
   if (!token) return false;
 
   try {
-    const res = await fetch("http://localhost:8000/api/verify-token/", {
-      method: "POST",
-      headers: {
-        "Authorization": `Token ${token}`,
-        "Content-Type": "application/json"
-      },
-    });
+    const { data } = await endpoints.auth.verifyToken(token);
 
-    if (!res.ok) return false;
+    if (data.valid) {
+      // Opcional: guardar usuario
+      localStorage.setItem("username", data.user);
+      return true;
+    } else {
+      localStorage.removeItem("token");
+      return false;
+    }
 
-    const data = await res.json();
-    return data.valid; // true o false
   } catch (error) {
-    console.error("Error verificando token:", error);
+    console.error("❌ Error verificando token:", error);
+    localStorage.removeItem("token");
     return false;
   }
 };

@@ -5,6 +5,7 @@ import {
 } from "recharts";
 import Header from "../components/Header";
 import './DetalleSensor.css';
+import endpoints from "../api";
 
 export function Dashboard() {
   const { id } = useParams();
@@ -14,16 +15,14 @@ export function Dashboard() {
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
 
     async function fetchDashboardData() {
       setLoading(true);
       try {
-        const res = await fetch(`http://localhost:8000/api/dashboard_zona/${id}/`, {
-          headers: { "Authorization": `Token ${token}` }
-        });
-        const data = await res.json();
+
+        const { data } = await endpoints.zonas.dashboard(id);
         console.log("Dashboard data recibida:", data);
+        
         setDashboardData(data);
         
         // Procesar datos para el gráfico
@@ -134,7 +133,7 @@ export function Dashboard() {
 
           <div className="stat-card">
               <h3>Orientación</h3>
-            <p>{zona.orientation || "Norte"}</p>
+            <p>{zona.orientacion || "Norte"}</p>
           </div>
         </div>
 

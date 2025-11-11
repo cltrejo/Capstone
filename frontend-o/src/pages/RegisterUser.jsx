@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Header from '../components/Header'
 import './Login.css'
 import { isAuthenticated } from '../utils/auth'
+import endpoints from '../api'
 
 export function RegisterUser() {
   const [formData, setFormData] = useState({
@@ -53,38 +54,44 @@ export function RegisterUser() {
 
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:8000/api/registro/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username,
-          first_name,
-          last_name,
-          email,
-          password,
-          // 👇 el tipo de usuario se define por defecto como "COMUN" en el backend
-        })
+      // 👇 Llamada al endpoint usando Axios
+      const { data } = await endpoints.auth.registro({
+        username,
+        first_name,
+        last_name,
+        email,
+        password,
       })
 
-      const data = await res.json().catch(() => ({}))
+      console.log("✅ Usuario registrado:", data)
 
-      if (res.ok) {
-        setSuccess('✅ Usuario creado correctamente. Ahora puedes iniciar sesión.')
-        setFormData({
-          username: '',
-          first_name: '',
-          last_name: '',
-          email: '',
-          password: '',
-          confirmPassword: ''
-        })
-        setTimeout(() => navigate('/login'), 1200)
-      } else {
-        setError(data?.detail || 'No fue posible registrar el usuario.')
-      }
+      setSuccess('✅ Usuario creado correctamente. Ahora puedes iniciar sesión.')
+      setFormData({
+        username: '',
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      })
+
+      setTimeout(() => navigate('/login'), 1200)
+
     } catch (err) {
       console.error(err)
-      setError('Error de red. Inténtalo nuevamente.')
+
+      // 🔹 Si el backend devuelve errores de validación
+      if (err.response?.data) {
+        const data = err.response.data
+        const mensaje = 
+          data.detail ||
+          Object.values(data).flat().join(', ') || 
+          'No fue posible registrar el usuario.'
+        setError(mensaje)
+      } else {
+        setError('Error de red. Inténtalo nuevamente.')
+      }
+
     } finally {
       setLoading(false)
     }

@@ -49,7 +49,7 @@ export function RegisterMaintainer (){
 
     setLoading(true)
     try {
-      const res = await fetch('http://localhost:8000/api/register-maintainer/', {
+      const res = await fetch('https://5g6lhmg0-8000.brs.devtunnels.ms/api/register-maintainer/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
