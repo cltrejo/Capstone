@@ -11,7 +11,7 @@ export function Dashboard() {
   const { id } = useParams();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("24h");
+  const [filter, setFilter] = useState("1h");
   const [chartData, setChartData] = useState([]);
 
   useEffect(() => {
@@ -124,35 +124,19 @@ export function Dashboard() {
 
           <div className="stat-card">
               <h3>Material principal</h3>
-            <p>{materiales[0]?.nombre || "Concreto"}</p>
+            <p>{materiales[0]?.nombre || "Desconocido"}</p>
           </div>
 
           <div className="stat-card">
               <h3>Superficie</h3>
-            <p>{zona.superficie_m3 || 0} m³</p>
+            <p>{zona.superficie_m3 || "Desconocido"} m³</p>
           </div>
 
           <div className="stat-card">
               <h3>Orientación</h3>
-            <p>{zona.orientacion || "Norte"}</p>
+            <p>{zona.orientacion || "Desconocido"}</p>
           </div>
         </div>
-
-        {/* 🔹 Información adicional de sensores */}
-        {sensores && sensores.length > 0 && (
-          <div className="sensors-section">
-            <h3>Sensores de Energía</h3>
-            <div className="sensors-grid">
-              {sensores.map(sensor => (
-                <div key={sensor.id_sensor} className="sensor-card">
-                  <h4>{sensor.nombre}</h4>
-                  <p>Tipo: {sensor.tipo}</p>
-                  <p>Última medición: {sensor.mediciones[0]?.valor || "N/D"} {sensor.mediciones[0]?.unidad || ""}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* 🔹 Gráfico histórico */}
         <div className="chart-section">
@@ -189,6 +173,22 @@ export function Dashboard() {
                 <div key={thermo.id_thermostato} className="thermo-card">
                   <h4>{thermo.nombre}</h4>
                   <p>Mediciones recientes: {thermo.mediciones.length}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        {/* 🔹 Información adicional de sensores */}
+        <hr />
+        {sensores && sensores.length > 0 && (
+          <div className="sensors-section">
+            <h3>Sensores de Energía</h3>
+            <div className="sensors-grid">
+              {sensores.map(sensor => (
+                <div key={sensor.id_sensor} className="sensor-card">
+                  <h4>{sensor.nombre}</h4>
+                  <p>Tipo: {sensor.tipo}</p>
+                  <p>Última medición: {sensor.mediciones[0]?.valor || "N/D"} {sensor.mediciones[0]?.unidad || ""}</p>
                 </div>
               ))}
             </div>
