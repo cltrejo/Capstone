@@ -2,6 +2,7 @@
   "name": "frontend-o",
   "private": true,
   "version": "0.0.0",
+  "homepage": "http://win-6p07gdg0ld9/bluetek",
   "type": "module",
   "scripts": {
     "dev": "vite",

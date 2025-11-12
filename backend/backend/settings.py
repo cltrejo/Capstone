@@ -27,11 +27,10 @@ SECRET_KEY = 'django-insecure-0+5(v_99m2=05j-^k7z@91)1!brc5_@z*el*xp17oczb)pkig9
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    'win-6p07gdg0ld9',
     'localhost',
     '127.0.0.1',
-    '5g6lhmg0-8000.brs.devtunnels.ms',
-    '5g6lhmg0-5173.brs.devtunnels.ms',
-    '.brs.devtunnels.ms'  # Para cualquier subdominio de devtunnels
+    '0.0.0.0',
 ]
 
 
